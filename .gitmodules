@@ -19,3 +19,12 @@
 [submodule "src/oaic/RIC-Deployment"]
 	path = src/oaic/RIC-Deployment
 	url = https://github.com/openaicellular/RIC-Deployment.git
+[submodule "src/ns3/--recursive"]
+	path = src/ns3/--recursive
+	url = https://gitlab.com/nsnam/ns-3-dev.git
+[submodule "src/ns3/ns-3-dev"]
+	path = src/ns3/ns-3-dev
+	url = https://gitlab.com/nsnam/ns-3-dev.git
+[submodule "src/oran-e2sim"]
+	path = src/oran-e2sim
+	url = https://github.com/wineslab/ns-o-ran-e2-sim
