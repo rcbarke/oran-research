@@ -28,3 +28,13 @@
 [submodule "src/oran-e2sim"]
 	path = src/oran-e2sim
 	url = https://github.com/wineslab/ns-o-ran-e2-sim
+[submodule "src/colosseum-near-rt-ric"]
+	path = src/colosseum-near-rt-ric
+	url = https://github.com/wineslab/colosseum-near-rt-ric
+	branch = ns-o-ran
+[submodule "src/ns-o-ran-grafana"]
+	path = src/ns-o-ran-grafana
+	url = https://github.com/wineslab/ns-o-ran-grafana.git
+[submodule "src/osc/ric-dep"]
+	path = src/osc/ric-dep
+	url = https://gerrit.o-ran-sc.org/r/ric-plt/ric-dep

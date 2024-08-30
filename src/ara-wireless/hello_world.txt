@@ -1,0 +1,2 @@
+Follow these instructions to download ARA through SSH:
+https://arawireless.readthedocs.io/en/latest/ara_experiments/ara_hello_world.html
