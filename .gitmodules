@@ -13,3 +13,9 @@
 [submodule "ric-dep"]
 	path = ric-dep
 	url = https://gerrit.o-ran-sc.org/r/it/dep
+[submodule "src/asn1c"]
+	path = src/asn1c
+	url = https://gitlab.eurecom.fr/oai/asn1c.git
+[submodule "src/oaic/RIC-Deployment"]
+	path = src/oaic/RIC-Deployment
+	url = https://github.com/openaicellular/RIC-Deployment.git
