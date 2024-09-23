@@ -23,6 +23,6 @@
 [submodule "src/osc/ric-dep"]
 	path = src/osc/ric-dep
 	url = https://gerrit.o-ran-sc.org/r/ric-plt/ric-dep
-[submodule "simulations/ns-o-ran-oaic/oaic"]
-    path = simulations/ns-o-ran-oaic/oaic
+[submodule "simulations/oaic-srs-ran/oaic"]
+    path = simulations/oaic-srs-ran/oaic
     url = https://github.com/openaicellular/oaic.git
