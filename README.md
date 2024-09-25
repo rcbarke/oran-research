@@ -205,4 +205,119 @@ Error initializing radio.
 2024-09-25T02:53:11.107806 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
 2024-09-25T02:53:11.108580 [COMN   ] [D] [    0] RxSockets: closed.
 
-sudo srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args="fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6" --ric.agent.remote_ipv4_addr=<EXTERNAL_IP_OR_NODEPORT> --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006
+
+
+srsran1@srsRAN1:~$ sudo srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args="fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6" --ric.agent.remote_ipv4_addr=${E2TERM_IP} --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=${E2NODE_IP} --ric.agent.local_port=${E2NODE_PORT}
+[sudo] password for srsran1: 
+---  Software Radio Systems LTE eNodeB  ---
+
+Couldn't open , trying /root/.config/srsran/enb.conf
+Reading configuration file /root/.config/srsran/enb.conf...
+Couldn't open sib.conf, trying /root/.config/srsran/sib.conf
+Couldn't open rr.conf, trying /root/.config/srsran/rr.conf
+Couldn't open rb.conf, trying /root/.config/srsran/rb.conf
+
+Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+
+2024-09-25T14:19:02.917035 [ENB    ] [I] Using binary srsenb with arguments: --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006 
+2024-09-25T14:19:02.956294 [ENB    ] [I] Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+2024-09-25T14:19:02.956911 [ENB    ] [I] Using sync queue size of one for ZMQ based radio.
+inet_pton: Success
+Failed to initiate S1 connection. Attempting reconnection in 10 seconds
+inet_pton: Success
+Failed to bind on address 127.0.1.1:, port 2152: Success
+Error initializing EUTRA stack.
+2024-09-25T14:19:03.026707 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T14:19:03.026710 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T14:19:03.026755 [COMN   ] [E] [    0] Failed to convert IP address (127.0.1.1:) to sockaddr_in struct
+2024-09-25T14:19:03.026776 [COMN   ] [W] [    0] RxSockets: The socket fd=-1 to be removed does not exist
+2024-09-25T14:19:03.026794 [COMN   ] [E] [    0] Failed to convert IP address (127.0.1.1:) to sockaddr_in struct
+Opening 2 channels in RF device=zmq with args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6
+Available RF device list: UHD  zmq 
+CHx base_srate=23.04e6
+CHx id=enb
+Current sample rate is 1.92 MHz with a base rate of 23.04 MHz (x12 decimation)
+CH0 rx_port=tcp://localhost:2001
+CH0 tx_port=tcp://*:2000
+CH0 fail_on_disconnect=true
+CH1 rx_port=tcp://localhost:2101
+CH1 tx_port=tcp://*:2100
+2024-09-25T14:19:03.192748 [RIC    ] [D] [    0] log_level = debug
+
+2024-09-25T14:19:03.192753 [E2SM   ] [I] [    0] kpm: building function list
+
+2024-09-25T14:19:03.196686 [RIC    ] [I] [    0] added model ORAN-E2SM-KPM
+
+2024-09-25T14:19:03.196711 [RIC    ] [I] [    0] added model ORAN-E2SM-gNB-NRT
+
+2024-09-25T14:19:03.196713 [RIC    ] [D] [    0] model ORAN-E2SM-KPM function ORAN-E2SM-KPM (function_id 0) enabled and registered
+
+2024-09-25T14:19:03.196714 [RIC    ] [D] [    0] model ORAN-E2SM-gNB-NRT function ORAN-E2SM-gNB-NRT (function_id 1) enabled and registered
+
+2024-09-25T14:19:03.196714 [RIC    ] [D] [    0] RIC state -> INITIALIZED
+
+2024-09-25T14:19:03.201394 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T14:19:03.201397 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T14:19:03.201415 [COMN   ] [D] [    0] Successfully bound to address 10.0.2.101:5006
+2024-09-25T14:19:03.202236 [COMN   ] [I] [    0] Failed to establish socket connection to 10.0.2.15
+connect(): Connection refused
+2024-09-25T14:19:03.202577 [RIC    ] [E] [    0] failed to connect to 10.0.2.15
+2024-09-25T14:19:03.202593 [RIC    ] [I] [    0] resetting agent connection (reconnect enabled)
+
+2024-09-25T14:19:03.202594 [RIC    ] [I] [    0] pushing connection_reset (1)
+
+2024-09-25T14:19:03.202594 [RIC    ] [I] [    0] pushed connection_reset (2)
+
+2024-09-25T14:19:03.202596 [RIC    ] [I] [    0] stopping agent
+
+2024-09-25T14:19:03.202603 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T14:19:03.202723 [COMN   ] [D] [    0] RxSockets: closed.
+2024-09-25T14:19:03.202971 [RIC    ] [D] [    0] RIC state -> INITIALIZED
+
+2024-09-25T14:19:03.202972 [RIC    ] [I] [    0] exiting agent thread
+
+2024-09-25T14:19:05.257195 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T14:19:05.257748 [COMN   ] [D] [    0] RxSockets: closed.
+srsRAN crashed... backtrace saved in './srsRAN.backtrace.crash'...
+---  exiting  ---
+srsran1@srsRAN1:~$ cat ./srsRAN.backtrace.crash 
+--- command='srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006' version=21.10.0 signal=11 date='25/09/2024 02:26:39' ---
+	srsenb(+0x335d32) [0x55dc6b200d32]
+	/lib/x86_64-linux-gnu/libc.so.6(+0x43090) [0x7f3c38849090]
+	/lib/x86_64-linux-gnu/libpthread.so.0(+0x9aab) [0x7f3c391deaab]
+	srsenb(+0x29790c) [0x55dc6b16290c]
+	srsenb(+0x299209) [0x55dc6b164209]
+	srsenb(+0x299e0d) [0x55dc6b164e0d]
+	srsenb(+0xfcb87) [0x55dc6afc7b87]
+	srsenb(+0xfcc9d) [0x55dc6afc7c9d]
+	srsenb(+0xdf1f5) [0x55dc6afaa1f5]
+	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7f3c3882a083]
+	srsenb(_start+0x2e) [0x55dc6afabf6e]
+
+--- command='srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006' version=21.10.0 signal=11 date='25/09/2024 02:32:01' ---
+	srsenb(+0x335d32) [0x5648a84e4d32]
+	/lib/x86_64-linux-gnu/libc.so.6(+0x43090) [0x7f5b74173090]
+	/lib/x86_64-linux-gnu/libpthread.so.0(+0x9aab) [0x7f5b74b08aab]
+	srsenb(+0x29790c) [0x5648a844690c]
+	srsenb(+0x299209) [0x5648a8448209]
+	srsenb(+0x299e0d) [0x5648a8448e0d]
+	srsenb(+0xfcb87) [0x5648a82abb87]
+	srsenb(+0xfcc9d) [0x5648a82abc9d]
+	srsenb(+0xdf1f5) [0x5648a828e1f5]
+	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7f5b74154083]
+	srsenb(_start+0x2e) [0x5648a828ff6e]
+
+--- command='srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006' version=21.10.0 signal=11 date='25/09/2024 14:19:05' ---
+	srsenb(+0x335d32) [0x5575c23a8d32]
+	/lib/x86_64-linux-gnu/libc.so.6(+0x43090) [0x7fe5ebbf9090]
+	/lib/x86_64-linux-gnu/libpthread.so.0(+0x9aab) [0x7fe5ec58eaab]
+	srsenb(+0x29790c) [0x5575c230a90c]
+	srsenb(+0x299209) [0x5575c230c209]
+	srsenb(+0x299e0d) [0x5575c230ce0d]
+	srsenb(+0xfcb87) [0x5575c216fb87]
+	srsenb(+0xfcc9d) [0x5575c216fc9d]
+	srsenb(+0xdf1f5) [0x5575c21521f5]
+	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7fe5ebbda083]
+	srsenb(_start+0x2e) [0x5575c2153f6e]
+
+
