@@ -609,3 +609,48 @@ log.filename = stdout
 # Uncomment below to enable additional logging
 # log.filename = /var/log/srsran/enb.log
 
+srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ sudo srsenb
+---  Software Radio Systems LTE eNodeB  ---
+
+Couldn't open , trying /root/.config/srsran/enb.conf
+Reading configuration file /root/.config/srsran/enb.conf...
+Couldn't open sib.conf, trying /root/.config/srsran/sib.conf
+Couldn't open rr.conf, trying /root/.config/srsran/rr.conf
+Couldn't open rb.conf, trying /root/.config/srsran/rb.conf
+
+Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+
+2024-09-25T15:14:57.763485 [ENB    ] [I] Using binary srsenb with arguments: 
+2024-09-25T15:14:57.804620 [ENB    ] [I] Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+2024-09-25T15:14:57.805273 [ENB    ] [I] Using sync queue size of one for ZMQ based radio.
+bind(): Cannot assign requested address
+Failed to initiate S1 connection. Attempting reconnection in 10 seconds
+bind(): Cannot assign requested address
+Failed to bind on address 192.168.3.1, port 2152: Cannot assign requested address
+Error initializing EUTRA stack.
+2024-09-25T15:14:57.874702 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T15:14:57.874704 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T15:14:57.874725 [COMN   ] [E] [    0] Failed to bind on address 192.168.3.1: Cannot assign requested address errno 99
+2024-09-25T15:14:57.874785 [COMN   ] [W] [    0] RxSockets: The socket fd=-1 to be removed does not exist
+2024-09-25T15:14:57.874795 [COMN   ] [E] [    0] Failed to bind on address 192.168.3.1: Cannot assign requested address errno 99
+Opening 2 channels in RF device=zmq with args="fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6"
+Available RF device list: UHD  zmq 
+CHx base_srate=23.04e6"
+CHx id=enb
+Current sample rate is 1.92 MHz with a base rate of 23.04 MHz (x12 decimation)
+CH0 rx_port=tcp://localhost:2001
+CH0 tx_port=tcp://*:2000
+CH0 fail_on_disconnect=true
+CH1 rx_port=tcp://localhost:2101
+CH1 tx_port=tcp://*:2100
+2024-09-25T15:14:58.045875 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T15:14:58.045883 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T15:14:58.045917 [COMN   ] [D] [    0] Successfully bound to address 10.0.2.101:5006
+connect(): Connection refused
+2024-09-25T15:14:58.047247 [COMN   ] [I] [    0] Failed to establish socket connection to 10.0.2.15
+2024-09-25T15:14:58.047709 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T15:14:58.047812 [COMN   ] [D] [    0] RxSockets: closed.
+2024-09-25T15:15:02.105829 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T15:15:02.106479 [COMN   ] [D] [    0] RxSockets: closed.
+srsRAN crashed... backtrace saved in './srsRAN.backtrace.crash'...
+---  exiting  ---
