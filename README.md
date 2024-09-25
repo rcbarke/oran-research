@@ -486,3 +486,91 @@ mcs = 20
 #report_json_enable   = true
 #alarms_log_enable    = true
 
+srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ sudo srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args="fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6" --ric.agent.remote_ipv4_addr=${E2TERM_IP} --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=${E2NODE_IP} --ric.agent.local_port=${E2NODE_PORT}
+---  Software Radio Systems LTE eNodeB  ---
+
+Couldn't open , trying /root/.config/srsran/enb.conf
+Reading configuration file /root/.config/srsran/enb.conf...
+Couldn't open sib.conf, trying /root/.config/srsran/sib.conf
+Couldn't open rr.conf, trying /root/.config/srsran/rr.conf
+Couldn't open rb.conf, trying /root/.config/srsran/rb.conf
+
+Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+
+/home/srsran1/oaic/srsRAN-e2/srsenb/src/enb_cfg_parser.cc:1216: Force DL EARFCN for cell PCI=1 to 100
+2024-09-25T15:05:49.933038 [ENB    ] [I] Using binary srsenb with arguments: --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006 
+2024-09-25T15:05:49.972367 [ENB    ] [I] Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+2024-09-25T15:05:49.972995 [ENB    ] [I] Using sync queue size of one for ZMQ based radio.
+bind(): Cannot assign requested address
+Failed to initiate S1 connection. Attempting reconnection in 10 seconds
+bind(): Cannot assign requested address
+2024-09-25T15:05:50.045264 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T15:05:50.045267 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T15:05:50.045288 [COMN   ] [E] [    0] Failed to bind on address 10.0.2.15: Cannot assign requested address errno 99
+2024-09-25T15:05:50.045334 [COMN   ] [W] [    0] RxSockets: The socket fd=-1 to be removed does not exist
+2024-09-25T15:05:50.045345 [COMN   ] [E] [    0] Failed to bind on address 10.0.2.15: Cannot assign requested address errno 99
+Failed to bind on address 10.0.2.15, port 2152: Cannot assign requested address
+Error initializing EUTRA stack.
+Opening 2 channels in RF device=zmq with args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6
+Available RF device list: UHD  zmq 
+CHx base_srate=23.04e6
+CHx id=enb
+Current sample rate is 1.92 MHz with a base rate of 23.04 MHz (x12 decimation)
+CH0 rx_port=tcp://localhost:2001
+CH0 tx_port=tcp://*:2000
+CH0 fail_on_disconnect=true
+CH1 rx_port=tcp://localhost:2101
+CH1 tx_port=tcp://*:2100
+2024-09-25T15:05:50.215176 [RIC    ] [D] [    0] log_level = debug
+
+2024-09-25T15:05:50.215180 [E2SM   ] [I] [    0] kpm: building function list
+
+2024-09-25T15:05:50.217704 [RIC    ] [I] [    0] added model ORAN-E2SM-KPM
+
+2024-09-25T15:05:50.217726 [RIC    ] [I] [    0] added model ORAN-E2SM-gNB-NRT
+
+2024-09-25T15:05:50.217728 [RIC    ] [D] [    0] model ORAN-E2SM-KPM function ORAN-E2SM-KPM (function_id 0) enabled and registered
+
+2024-09-25T15:05:50.217728 [RIC    ] [D] [    0] model ORAN-E2SM-gNB-NRT function ORAN-E2SM-gNB-NRT (function_id 1) enabled and registered
+
+2024-09-25T15:05:50.217729 [RIC    ] [D] [    0] RIC state -> INITIALIZED
+
+2024-09-25T15:05:50.222705 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T15:05:50.222713 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T15:05:50.222746 [COMN   ] [D] [    0] Successfully bound to address 10.0.2.101:5006
+connect(): Connection refused
+2024-09-25T15:05:50.224055 [COMN   ] [I] [    0] Failed to establish socket connection to 10.0.2.15
+2024-09-25T15:05:50.224100 [RIC    ] [E] [    0] failed to connect to 10.0.2.15
+2024-09-25T15:05:50.224153 [RIC    ] [I] [    0] resetting agent connection (reconnect enabled)
+
+2024-09-25T15:05:50.224154 [RIC    ] [I] [    0] pushing connection_reset (1)
+
+2024-09-25T15:05:50.224155 [RIC    ] [I] [    0] pushed connection_reset (2)
+
+2024-09-25T15:05:50.224158 [RIC    ] [I] [    0] stopping agent
+
+2024-09-25T15:05:50.224206 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T15:05:50.224360 [COMN   ] [D] [    0] RxSockets: closed.
+2024-09-25T15:05:50.225033 [RIC    ] [D] [    0] RIC state -> INITIALIZED
+
+2024-09-25T15:05:50.225034 [RIC    ] [I] [    0] exiting agent thread
+
+Saving MAC PCAP (DLT=149) to enb_mac_nr.pcap
+Saving MAC PCAP (DLT=149) to /tmp/enb.pcap
+2024-09-25T15:05:52.244742 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T15:05:52.245376 [COMN   ] [D] [    0] RxSockets: closed.
+srsRAN crashed... backtrace saved in './srsRAN.backtrace.crash'...
+---  exiting  ---
+srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ cat ./srsRAN.backtrace.crash 
+--- command='srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006' version=21.10.0 signal=11 date='25/09/2024 15:05:52' ---
+	srsenb(+0x335d32) [0x55d571896d32]
+	/lib/x86_64-linux-gnu/libc.so.6(+0x43090) [0x7fd8f9820090]
+	/lib/x86_64-linux-gnu/libpthread.so.0(+0x9aab) [0x7fd8fa1b5aab]
+	srsenb(+0x29790c) [0x55d5717f890c]
+	srsenb(+0x299209) [0x55d5717fa209]
+	srsenb(+0x299e0d) [0x55d5717fae0d]
+	srsenb(+0xfcb87) [0x55d57165db87]
+	srsenb(+0xfcc9d) [0x55d57165dc9d]
+	srsenb(+0xdf1f5) [0x55d5716401f5]
+	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7fd8f9801083]
+	srsenb(_start+0x2e) [0x55d571641f6e]
