@@ -325,3 +325,193 @@ srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ telnet 10.0.2.15 32321
 Trying 10.0.2.15...
 Connected to 10.0.2.15.
 Escape character is '^]'.
+
+#####################################################################
+#                   srsENB configuration file
+#####################################################################
+
+#####################################################################
+# eNB configuration
+#
+# enb_id:               20-bit eNB identifier.
+# mcc:                  Mobile Country Code
+# mnc:                  Mobile Network Code
+# mme_addr:             IP address of MME for S1 connection
+# gtp_bind_addr:        Local IP address to bind for GTP connection
+# gtp_advertise_addr:   IP address of eNB to advertise for DL GTP-U Traffic
+# s1c_bind_addr:        Local IP address to bind for S1AP connection
+# s1c_bind_port:        Source port for S1AP connection (0 means any)
+# n_prb:                Number of Physical Resource Blocks (6,15,25,50,75,100)
+# tm:                   Transmission mode 1-4 (TM1 default)
+# nof_ports:            Number of Tx ports (1 port default, set to 2 for TM2/3/4)
+#
+#####################################################################
+[enb]
+# Original configuration
+# enb_id = 0x19B
+# mcc = 001
+# mnc = 01
+# mme_addr = 127.0.1.100
+# gtp_bind_addr = 127.0.1.1
+# s1c_bind_addr = 127.0.1.1
+# s1c_bind_port = 0
+# n_prb = 50
+# tm = 4
+# nof_ports = 2
+
+# Updated configuration
+enb_id = 0x19B
+mcc = 001
+mnc = 01
+mme_addr = 10.0.2.15   # Updated to your actual MME IP
+gtp_bind_addr = 10.0.2.15   # Updated to match your setup
+s1c_bind_addr = 10.0.2.15   # Updated to match your setup
+s1c_bind_port = 0
+n_prb = 50
+tm = 1   # Example: Changed transmission mode to 1
+nof_ports = 1   # Example: Kept it as 1
+
+#####################################################################
+# eNB configuration files
+#
+# sib_config:  SIB1, SIB2 and SIB3 configuration file 
+# note: When enabling MBMS, use the sib.conf.mbsfn configuration file which includes SIB13
+# rr_config:   Radio Resources configuration file 
+# rb_config:   SRB/DRB configuration file 
+#####################################################################
+[enb_files]
+sib_config = sib.conf
+rr_config  = rr.conf
+rb_config = rb.conf
+
+#####################################################################
+# RF configuration
+#
+# dl_earfcn: EARFCN code for DL (only valid if a single cell is configured in rr.conf)
+# tx_gain: Transmit gain (dB).
+# rx_gain: Optional receive gain (dB). If disabled, AGC if enabled
+#
+# Optional parameters:
+# dl_freq:            Override DL frequency corresponding to dl_earfcn
+# ul_freq:            Override UL frequency corresponding to dl_earfcn (must be set if dl_freq is set)
+# device_name:        Device driver family
+#                     Supported options: "auto" (uses first driver found), "UHD", "bladeRF", "soapy", "zmq" or "Sidekiq"
+# device_args:        Arguments for the device driver. Options are "auto" or any string.
+#                     Default for UHD: "recv_frame_size=9232,send_frame_size=9232"
+#                     Default for bladeRF: ""
+# time_adv_nsamples:  Transmission time advance (in number of samples) to compensate for RF delay
+#                     from antenna to timestamp insertion.
+#                     Default "auto". B210 USRP: 100 samples, bladeRF: 27
+#####################################################################
+[rf]
+# Original configuration
+# dl_earfcn = 3350
+tx_gain = 80
+rx_gain = 40
+
+# device_name = auto
+
+# For best performance in 2x2 MIMO and >= 15 MHz use the following device_args settings:
+#     USRP B210: num_recv_frames=64,num_send_frames=64
+#     And for 75 PRBs, also append ",master_clock_rate=15.36e6" to the device args
+
+# For best performance when BW<5 MHz (25 PRB), use the following device_args settings:
+#     USRP B210: send_frame_size=512,recv_frame_size=512
+
+# device_args = auto
+# time_adv_nsamples = auto
+
+# Example for ZMQ-based operation with TCP transport for I/Q samples
+device_name = zmq
+device_args = fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6
+
+#####################################################################
+# Packet capture configuration
+#
+# MAC-layer packets are captured to a file in the compact format which can
+# be decoded by Wireshark. For decoding, use the UDP dissector and the UDP 
+# heuristic dissection. Edit the preferences (Edit > Preferences > 
+# Protocols > DLT_USER) for DLT_USER to add an entry for DLT=149 with 
+# Protocol=udp. Further, enable the heuristic dissection in UDP under:
+# Analyze > Enabled Protocols > MAC-LTE > mac_lte_udp and MAC-NR > mac_nr_udp
+# For more information see: https://wiki.wireshark.org/MAC-LTE
+# Configuring this Wireshark preferences is needed for decoding the MAC PCAP
+# files as well as for the live network capture option.
+#
+# Please note that this setting will by default only capture MAC
+# frames on dedicated channels, and not SIB.  You have to build with
+# WRITE_SIB_PCAP enabled in srsenb/src/stack/mac/mac.cc if you want
+# SIB to be part of the MAC pcap file.
+#
+# S1AP Packets are captured to a file in the compact format which can
+# be decoded by the Wireshark s1ap dissector with DLT 150. 
+# To use the dissector, edit the preferences for DLT_USER to 
+# add an entry with DLT=150, Payload Protocol=s1ap.
+#
+# mac_enable:   Enable MAC layer packet captures (true/false)
+# mac_filename: File path to use for packet captures
+# s1ap_enable:   Enable or disable the PCAP.
+# s1ap_filename: File name where to save the PCAP.
+#
+# mac_net_enable: Enable MAC layer packet captures sent over the network (true/false default: false)
+# bind_ip: Bind IP address for MAC network trace (default: "0.0.0.0")
+# bind_port: Bind port for MAC network trace (default: 5687)
+# client_ip: Client IP address for MAC network trace (default: "127.0.0.1")
+# client_port Client IP address for MAC network trace (default: 5847)
+#####################################################################
+[pcap]
+enable = false
+filename = /tmp/enb.pcap
+s1ap_enable = false
+s1ap_filename = /tmp/enb_s1ap.pcap
+
+mac_net_enable = false
+bind_ip = 0.0.0.0
+bind_port = 5687
+client_ip = 127.0.0.1
+client_port = 5847
+
+#####################################################################
+# Log configuration
+#
+# Log levels can be set for individual layers. "all_level" sets log
+# level for all layers unless otherwise configured.
+# Format: e.g. phy_level = info
+#
+# In the same way, packet hex dumps can be limited for each level.
+# "all_hex_limit" sets the hex limit for all layers unless otherwise configured.
+# Format: e.g. phy_hex_limit = 32
+#
+# Logging layers: rf, phy, phy_lib, mac, rlc, pdcp, rrc, gtpu, s1ap, stack, all
+# Logging levels: debug, info, warning, error, none
+#
+# filename: File path to use for log output. Can be set to stdout
+#           to print logs to standard output
+# file_max_size: Maximum file size (in kilobytes). When passed, multiple files are created.
+#                If set to negative, a single log file will be created.
+#####################################################################
+[log]
+all_level = warning
+all_hex_limit = 32
+filename = /tmp/enb.log
+file_max_size = -1
+
+[gui]
+enable = false
+
+#####################################################################
+# Scheduler configuration options
+#
+# sched_policy:      User MAC scheduling policy (E.g. time_rr, time_pf)
+# min_aggr_level:    Optional minimum aggregation level index (l=log2(L) can be 0, 1, 2 or 3)
+# max_aggr_level:    Optional maximum aggregation level index (l=log2(L) can be 0, 1, 2 or 3)
+# adaptive_aggr_level: Boolean flag to enable/disable adaptive aggregation level based on target BLER
+# pdsch_mcs:         Optional fixed PDSCH MCS (ignoring target BLER)
+#
+#####################################################################
+[scheduler]
+sched_policy = time_rr
+min_aggr_level = 0
+max_aggr_level = 2
+adaptive_aggr_level = true
+pdsch_mcs = 0
