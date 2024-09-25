@@ -126,3 +126,41 @@ Error initializing radio.
 2024-09-25T02:47:33.781103 [COMN   ] [D] [    0] RxSockets: closed.
 
 sudo srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args="fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6" --ric.agent.remote_ipv4_addr=10.99.193.2 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=${E2NODE_IP} --ric.agent.local_port=${E2NODE_PORT}
+
+srsran1@srsRAN1:~$ sudo srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args="fail_on_disconnect=true,tx_port0=tcp://:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6" --ric.agent.remote_ipv4_addr=10.99.193.2 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=${E2NODE_IP} --ric.agent.local_port=${E2NODE_PORT}
+---  Software Radio Systems LTE eNodeB  ---
+
+Couldn't open , trying /root/.config/srsran/enb.conf
+Reading configuration file /root/.config/srsran/enb.conf...
+Couldn't open sib.conf, trying /root/.config/srsran/sib.conf
+Couldn't open rr.conf, trying /root/.config/srsran/rr.conf
+Couldn't open rb.conf, trying /root/.config/srsran/rb.conf
+
+Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+
+2024-09-25T02:50:05.223408 [ENB    ] [I] Using binary srsenb with arguments: --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.99.193.2 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006 
+2024-09-25T02:50:05.266037 [ENB    ] [I] Built in RelWithDebInfo mode using commit 384d343 on branch HEAD.
+2024-09-25T02:50:05.266723 [ENB    ] [I] Using sync queue size of one for ZMQ based radio.
+bind(): Cannot assign requested address
+Failed to initiate S1 connection. Attempting reconnection in 10 seconds
+bind(): Cannot assign requested address
+Failed to bind on address 10.0.2.15, port 2152: Cannot assign requested address
+Error initializing EUTRA stack.
+2024-09-25T02:50:05.344561 [COMN   ] [D] [    0] Setting RTO_INFO options on SCTP socket. Association 0, Initial RTO 3000, Minimum RTO 1000, Maximum RTO 6000
+2024-09-25T02:50:05.344563 [COMN   ] [D] [    0] Setting SCTP_INITMSG options on SCTP socket. Max attempts 3, Max init attempts timeout 5000
+2024-09-25T02:50:05.344584 [COMN   ] [E] [    0] Failed to bind on address 10.0.2.15: Cannot assign requested address errno 99
+2024-09-25T02:50:05.344648 [COMN   ] [W] [    0] RxSockets: The socket fd=-1 to be removed does not exist
+2024-09-25T02:50:05.344660 [COMN   ] [E] [    0] Failed to bind on address 10.0.2.15: Cannot assign requested address errno 99
+Opening 2 channels in RF device=zmq with args=fail_on_disconnect=true,tx_port0=tcp://:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6
+Available RF device list: UHD  zmq 
+CHx base_srate=23.04e6
+CHx id=enb
+Current sample rate is 1.92 MHz with a base rate of 23.04 MHz (x12 decimation)
+CH0 rx_port=tcp://localhost:2001
+CH0 tx_port=tcp://:2000
+CH0 fail_on_disconnect=true
+Error: binding transmitter socket (tcp://:2000): No such device
+[zmq] Error: opening transmitter
+Error initializing radio.
+2024-09-25T02:50:05.456627 [COMN   ] [D] [    0] RxSockets: Closing rx socket handler thread
+2024-09-25T02:50:05.459944 [COMN   ] [D] [    0] RxSockets: closed.
