@@ -654,3 +654,31 @@ connect(): Connection refused
 2024-09-25T15:15:02.106479 [COMN   ] [D] [    0] RxSockets: closed.
 srsRAN crashed... backtrace saved in './srsRAN.backtrace.crash'...
 ---  exiting  ---
+srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ cat ./sr
+src/                    srsRAN.backtrace.crash  
+srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ cat ./srsRAN.backtrace.crash 
+--- command='srsenb --enb.n_prb=50 --enb.name=enb1 --enb.enb_id=0x19B --rf.device_name=zmq --rf.device_args=fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6 --ric.agent.remote_ipv4_addr=10.0.2.15 --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout --ric.agent.local_ipv4_addr=10.0.2.101 --ric.agent.local_port=5006' version=21.10.0 signal=11 date='25/09/2024 15:05:52' ---
+	srsenb(+0x335d32) [0x55d571896d32]
+	/lib/x86_64-linux-gnu/libc.so.6(+0x43090) [0x7fd8f9820090]
+	/lib/x86_64-linux-gnu/libpthread.so.0(+0x9aab) [0x7fd8fa1b5aab]
+	srsenb(+0x29790c) [0x55d5717f890c]
+	srsenb(+0x299209) [0x55d5717fa209]
+	srsenb(+0x299e0d) [0x55d5717fae0d]
+	srsenb(+0xfcb87) [0x55d57165db87]
+	srsenb(+0xfcc9d) [0x55d57165dc9d]
+	srsenb(+0xdf1f5) [0x55d5716401f5]
+	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7fd8f9801083]
+	srsenb(_start+0x2e) [0x55d571641f6e]
+
+--- command='srsenb' version=21.10.0 signal=11 date='25/09/2024 15:15:02' ---
+	srsenb(+0x335d32) [0x562318a1dd32]
+	/lib/x86_64-linux-gnu/libc.so.6(+0x43090) [0x7f1bb6b2f090]
+	/lib/x86_64-linux-gnu/libpthread.so.0(+0x9aab) [0x7f1bb74c4aab]
+	srsenb(+0x29790c) [0x56231897f90c]
+	srsenb(+0x299209) [0x562318981209]
+	srsenb(+0x299e0d) [0x562318981e0d]
+	srsenb(+0xfcb87) [0x5623187e4b87]
+	srsenb(+0xfcc9d) [0x5623187e4c9d]
+	srsenb(+0xdf1f5) [0x5623187c71f5]
+	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7f1bb6b10083]
+	srsenb(_start+0x2e) [0x5623187c8f6e]
