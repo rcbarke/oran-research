@@ -321,3 +321,7 @@ srsran1@srsRAN1:~$ cat ./srsRAN.backtrace.crash
 	srsenb(_start+0x2e) [0x5575c2153f6e]
 
 
+srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ telnet 10.0.2.15 32321
+Trying 10.0.2.15...
+Connected to 10.0.2.15.
+Escape character is '^]'.
