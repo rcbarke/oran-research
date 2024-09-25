@@ -682,3 +682,28 @@ srsran1@srsRAN1:~/oaic/srsRAN-e2/srsenb$ cat ./srsRAN.backtrace.crash
 	srsenb(+0xdf1f5) [0x5623187c71f5]
 	/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7f1bb6b10083]
 	srsenb(_start+0x2e) [0x5623187c8f6e]
+
+# eNB Configuration File
+
+# General settings
+enb.name = enb1
+enb.enb_id = 0x19B
+enb.n_prb = 50
+
+# RF settings
+rf.device_name = zmq
+rf.device_args = "fail_on_disconnect=true,tx_port0=tcp://*:2000,rx_port0=tcp://localhost:2001,tx_port1=tcp://*:2100,rx_port1=tcp://localhost:2101,id=enb,base_srate=23.04e6"
+
+# RIC Agent settings
+ric.agent.local_ipv4_addr = 10.0.2.101       # Ensure this is VM2's IP
+ric.agent.local_port = 5006
+ric.agent.remote_ipv4_addr = 10.0.2.15       # Ensure this is VM1's IP
+ric.agent.remote_port = 32321
+
+# Logging settings
+log.all_level = warn
+log.filename = stdout
+
+# Uncomment if you have specific S1 settings
+# s1.mme_ipv4_addr = <MME_IP>
+# s1.mme_port = 36412
