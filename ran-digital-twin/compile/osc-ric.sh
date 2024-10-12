@@ -56,10 +56,31 @@ mask_network_address() {
 # Call the masking function and store the result
 masked_address=$(mask_network_address)
 
-# Download OSC RIC
-echo "Building OSC RIC..."
-git clone https://github.com/srsran/oran-sc-ric
-cd ./oran-sc-ric
-git grep -l "10.0.2." | xargs sed -i "s/10.0.2./${masked_address}/g"
-cd ..
-echo "OSC RIC build completed: Modified RIC IPs to $RIC_NETADDR $RIC_SUBNET_MASK..."
+# Check if the oran-sc-ric directory exists, and if so, skip cloning
+if [ -d "./oran-sc-ric" ]; then
+    echo "OSC RIC directory already exists. Skipping clone."
+else
+    # Clone the repository
+    echo "Building OSC RIC..."
+    git clone https://github.com/srsran/oran-sc-ric
+fi
+
+# Proceed with updating IP addresses if the directory exists
+if [ -d "./oran-sc-ric" ]; then
+    cd ./oran-sc-ric
+    
+    # Replace IP addresses within the repository files
+    FILES_TO_UPDATE="$(git grep -l "10.0.2.")"
+    if [ -n "$FILES_TO_UPDATE" ]; then  
+       echo "$FILES_TO_UPDATE" | xargs sed -i "s/10.0.2./${masked_address}/g"
+       echo "Modified RIC IPs to $RIC_NETADDR $RIC_SUBNET_MASK..."
+    fi;
+    
+    echo "OSC RIC build completed"
+    
+    # Return to the previous directory
+    cd ..
+else
+    echo "Error: OSC RIC repository not found after clone attempt."
+    exit 1
+fi

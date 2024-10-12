@@ -57,7 +57,7 @@ UE_NETMASK="255.255.255.0"
 # Default values for UE-related flags
 TOTAL_UES=3       # Total number of UEs across the network
 LOCAL_UES=3       # Number of UEs on this machine
-UE_START_IDX=1    # Starting index of UEs on this machine
+UE_START_IDX=1    # Starting index of UEs on this machine. One based indexing.
 
 # Define valid flags
 VALID_FLAGS=("-mode" "-hostip" "-int" "-ue" "-ue_local" "-ue_idx")
@@ -328,7 +328,7 @@ build_component() {
             ;;
         "srsue")
             echo "Building component for srs4G srsUE..."
-            ./compile/srs4g.sh $LOCAL_UES
+            ./compile/srs4g.sh $LOCAL_UES $UE_START_IDX
             ;;
         "gnuradio")
             echo "Building component for GNU Radio: Modulated RF waveform for all UEs..."
@@ -428,6 +428,13 @@ if [ "$MODE" = "core" ]; then
    build_component "${app}"  
    echo ""
 
+   # srs4G
+   app="srsue" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
    
 else
    # Edge RAN
