@@ -265,7 +265,19 @@ build_dependencies() {
     case "$component" in
         "os") 
             echo "Building dependencies for OS.."
-            sudo apt-get install vim-gtk meld net-tools xterm dbus-x11 iperf iperf3 
+            sudo apt-get install vim-gtk meld net-tools xterm dbus-x11 iperf iperf3 curl
+            for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+            sudo apt-get update
+            sudo apt-get install ca-certificates curl
+            sudo install -m 0755 -d /etc/apt/keyrings
+            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            sudo chmod a+r /etc/apt/keyrings/docker.asc
+            echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+            sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
         "open5gs")   
             echo "Building dependencies for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
@@ -274,13 +286,11 @@ build_dependencies() {
             ;;
         "osc-ric")
             echo "Building dependencies for OSC RIC..."
-            # Insert the commands to build dependencies for OSC RIC
             ;;
         "srsgnb")
             echo "Building dependencies for srsProject srsgNB: Disaggregated CU/DU gNB..."
             sudo apt-get install libzmq3-dev
             sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
-            # Insert the commands to build dependencies for srsgNB
             ;;
         "srsue")
             echo "Building dependencies for srs4G srsUE..."
@@ -422,6 +432,14 @@ if [ "$MODE" = "core" ]; then
 
    # OSC RIC
    app="osc-ric" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
+
+   # srsgnb
+   app="srsgnb" 
    echo "----- ${app} -----"
    build_dependencies "${app}"
    echo ""
