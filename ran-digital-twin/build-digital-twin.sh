@@ -35,6 +35,7 @@
 
 # Mode
 MODE="core" # Setup core RAN by default
+BUILD_SRSP="T" # Build srsProject by default
 
 # Host IP configuration
 CORE_RAN_IP="10.0.2.15"
@@ -70,6 +71,7 @@ usage() {
     echo "  -mode [core|edge] Specify whether to configure a core or edge network VM."
     echo "  -hostip <ip_address>  Specify the static IP for the host machine."
     echo "  -int <iface> Specify the network interface to configure static IP."
+    echo "  -srsP [T|F] Specify whether or not to build srsRAN Project from source."
     echo "  -ue Specify the total amount of UEs to build across the network. Default 3."
     echo "  -ue_local Specify the amount of UEs to build on this machine. Must be <= total UEs. Default 3."
     echo "  -ue_idx Specify the starting index of the UEs on this machine. Cannot overlap with remote server if multiple machines are used. Default 1. Cannot specify 0."
@@ -126,14 +128,20 @@ validate_cli() {
                 fi
                 ;;
             -ue_idx)
-                if [[ $2 -eq 0 ]]; then
-                    echo "Error: -ue_idx 0 is reserved."
-                    usage
-                elif [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+                if [[ -n "$2" && "$2" =~ ^[0-9]+$ && "$2" -ge 1 ]]; then
                     UE_START_IDX="$2"
                     shift 2
                 else
-                    echo "Error: -ue_idx flag requires a numeric argument."
+                    echo "Error: -ue_idx flag requires a numeric argument >= 1."
+                    usage
+                fi
+                ;;
+            -srsP)
+                if [[ "$2" == "T" || "$2" == "F" ]]; then
+                    BUILD_SRSP="$2"
+                    shift 2
+                else
+                    echo "Error: -srsP flag requires 'T' (true) or 'F' (false)."
                     usage
                 fi
                 ;;
@@ -307,7 +315,8 @@ build_component() {
     case "$component" in
         "open5gs")
             echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
-            ./compile/open5gs.sh $TOTAL_UES
+            echo "Calling ./compile/open5gs.sh with TOTAL_UES=$TOTAL_UES and BUILD_SRSP=$BUILD_SRSP"
+            ./compile/open5gs.sh $TOTAL_UES $BUILD_SRSP
             ;;
         "osc-ric")
             echo "Building component for OSC RIC..."
