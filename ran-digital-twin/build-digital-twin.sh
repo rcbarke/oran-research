@@ -166,7 +166,7 @@ build_dependencies() {
     case "$component" in
         "os") 
             echo "Building dependencies for OS.."
-            sudo apt-get install vim-gtk meld net-tools iperf iperf3
+            sudo apt-get install vim-gtk meld net-tools xterm dbus-x11 iperf iperf3 
             ;;
         "open5gs")   
             echo "Building dependencies for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
@@ -207,6 +207,8 @@ build_dependencies() {
     esac
 }
 
+#            gnome-terminal --tab --title="Open5GS Build" -- bash -c "echo 'Building #Open5GS...'; ./build/open5gs.sh; exec bash"
+
 # Function to build component based on the provided component
 build_component() {
     component=$1
@@ -214,31 +216,31 @@ build_component() {
     case "$component" in
         "open5gs")
             echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
-
+            ./compile/open5gs.sh
             ;;
         "osc-ric")
             echo "Building component for OSC RIC..."
-
+            ./compile/osc-ric.sh
             ;;
         "srsgnb")
             echo "Building component for srsProject srsgNB: Disaggregated CU/DU gNB..."
-
+            echo "srsProject Built with open5gs"
             ;;
         "srsue")
-            echo "Building dependencies for srs4G srsUE..."
-
+            echo "Building component for srs4G srsUE..."
+            ./compile/srs4g.sh 3
             ;;
         "gnuradio")
-            echo "Building dependencies for GNU Radio: Modulated RF waveform for all UEs..."
-
+            echo "Building component for GNU Radio: Modulated RF waveform for all UEs..."
+            ./compile/gnuradio.sh
             ;;
         "kpimon")
-            echo "Building dependencies for KPIMon xApp: Performance metric monitoring at core..."
-
+            echo "Building component for KPIMon xApp: Performance metric monitoring at core..."
+            echo "Built with osc-ric"
             ;;
         "grafana")
             echo "Building dependencies for Grafana xApp: Performance metric monitoring at gNB..."
-
+            echo "Built with srsProject"
             ;;
         *)
             echo "Error: Invalid component '$component'. Please specify a valid component."
