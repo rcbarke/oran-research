@@ -334,7 +334,7 @@ build_component() {
             ;;
         "srsgnb")
             echo "Building component for srsProject srsgNB: Disaggregated CU/DU gNB..."
-            echo "srsProject Built with open5gs"
+            ./compile/srsgnb.sh $RIC_NET_ADDR
             ;;
         "srsue")
             echo "Building component for srs4G srsUE..."

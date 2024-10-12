@@ -108,10 +108,21 @@ build_subscriber_db() {
 # Function to build the srsProject repo with ZEROMQ Enabled
 build_srsran_project() {
     echo "srsRAN Project build initiated..."
-    git clone https://github.com/srsRAN/srsRAN_Project.git
-    cd srsRAN_Project
-    mkdir build
-    cd build
+    
+    # Check if the oran-sc-ric directory exists, and if so, skip cloning
+    if [ -d "./srsRAN_Project" ]; then
+        echo "srsRAN Project directory already exists. Skipping clone."
+        cd srsRAN_Project/build
+    else
+        # Clone the repository
+        echo "Cloning srsRAN_Project..."
+        git clone https://github.com/srsRAN/srsRAN_Project.git
+        cd srsRAN_Project
+        mkdir build
+        cd build
+    fi
+    
+    # Compile and build srsRAN_Project with ZeroMQ
     cmake ../ -DENABLE_EXPORT=ON -DENABLE_ZEROMQ=ON
     make -j`nproc`
     cd ../../
@@ -165,7 +176,6 @@ SRSBUILD="./srsRAN_Project/build"
 
 # Build srsran_project
 if [[ $2 == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
-    echo "$2"
     # Force build, build folder does not exist, or build folder is empty
     build_srsran_project
 fi
