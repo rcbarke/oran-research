@@ -320,7 +320,7 @@ build_component() {
             ;;
         "osc-ric")
             echo "Building component for OSC RIC..."
-            ./compile/osc-ric.sh
+            ./compile/osc-ric.sh $RIC_NET_ADDR $RIC_NETMASK
             ;;
         "srsgnb")
             echo "Building component for srsProject srsgNB: Disaggregated CU/DU gNB..."
@@ -414,6 +414,14 @@ if [ "$MODE" = "core" ]; then
 
    # Open5GS
    app="open5gs" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
+
+   # OSC RIC
+   app="osc-ric" 
    echo "----- ${app} -----"
    build_dependencies "${app}"
    echo ""

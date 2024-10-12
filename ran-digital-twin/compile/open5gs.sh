@@ -9,9 +9,14 @@
 # Description: Downloads and configures open5gs to the total amount of subscribers passed in
 # via CLI.
 #
-
-
-#!/bin/bash
+# Subscriber db is built within ./configs/subscriber_db.csv
+#
+# srsRANProject is cloned and built if not present or force built
+#
+# Subscriber db is staged to ./srsProject/docker/open5gs/subscriber.csv
+#
+# ./srsProject/docker/open5gs/open5gs.env is configured to point to the staged database
+#
 
 # Function to build the subscriber database based on TOTAL_UEs
 build_subscriber_db() {
