@@ -45,17 +45,97 @@ DEFAULT_GATEWAY="10.0.2.1"
 DEFAULT_DNS="8.8.8.8"
 INTERFACE=""  # Default empty, will be set if provided by -int flag
 
+# Default values for UE-related flags
+TOTAL_UES=3       # Total number of UEs across the network
+LOCAL_UES=3       # Number of UEs on this machine
+UE_START_IDX=0    # Starting index of UEs on this machine
+
 # Define valid flags
-VALID_FLAGS=("-mode" "-hostip" "-int")
+VALID_FLAGS=("-mode" "-hostip" "-int" "-ue" "-ue_local" "-ue_idx")
+DEBUG_MODE=false
 
 # Function to display usage information
 usage() {
-    echo "Usage: $0 [-hostip <ip_address>]"
+    echo "Usage: $0"
     echo "Optional flags:"
+    echo "  -debug Prints all runtime options if specified."
     echo "  -mode [core|edge] Specify whether to configure a core or edge network VM."
     echo "  -hostip <ip_address>  Specify the static IP for the host machine."
     echo "  -int <iface> Specify the network interface to configure static IP."
+    echo "  -ue Specify the total amount of UEs to build across the network. Default 3."
+    echo "  -ue_local Specify the amount of UEs to build on this machine. Must be <= total UEs. Default 3."
+    echo "  -ue_idx Specify the starting index of the UEs on this machine. Cannot overlap with remote server if multiple machines are used. Default 0."
     exit 1
+}
+
+# Function to validate CLI input
+validate_cli() {
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            -hostip)
+                if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+                    HOST_IP="$2"
+                    shift 2
+                else
+                    echo "Error: -hostip flag requires an argument."
+                    usage
+                fi
+                ;;
+            -mode)
+                if [[ "$2" == "core" || "$2" == "edge" ]]; then
+                    MODE="$2"
+                    shift 2
+                else
+                    echo "Error: -mode flag requires either 'core' or 'edge'."
+                    usage
+                fi
+                ;;
+            -int)
+                if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+                    INTERFACE="$2"
+                    shift 2
+                else
+                    echo "Error: -int flag requires an argument."
+                    usage
+                fi
+                ;;
+            -ue)
+                if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+                    TOTAL_UES="$2"
+                    shift 2
+                else
+                    echo "Error: -ue flag requires a numeric argument."
+                    usage
+                fi
+                ;;
+            -ue_local)
+                if [[ -n "$2" && "$2" =~ ^[0-9]+$ && "$2" -le "$TOTAL_UES" ]]; then
+                    LOCAL_UES="$2"
+                    shift 2
+                else
+                    echo "Error: -ue_local flag requires a numeric argument that is <= total UEs."
+                    usage
+                fi
+                ;;
+            -ue_idx)
+                if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+                    UE_START_IDX="$2"
+                    shift 2
+                else
+                    echo "Error: -ue_idx flag requires a numeric argument."
+                    usage
+                fi
+                ;;
+            -debug)
+                DEBUG_MODE=true
+                shift
+                ;;
+            *)
+                echo "Error: Unknown flag '$1'."
+                usage
+                ;;
+        esac
+    done
 }
 
 # Function to validate the host OS
@@ -189,7 +269,7 @@ build_dependencies() {
             ;;
         "gnuradio")
             echo "Building dependencies for GNU Radio: Modulated RF waveform for all UEs..."
-            # Insert the commands to build dependencies for GNU Radio
+            sudo apt-get install xterm #defensive programming
             ;;
         "kpimon")
             echo "Building dependencies for KPIMon xApp: Performance metric monitoring at core..."
@@ -216,7 +296,7 @@ build_component() {
     case "$component" in
         "open5gs")
             echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
-            ./compile/open5gs.sh
+            ./compile/open5gs.sh 3
             ;;
         "osc-ric")
             echo "Building component for OSC RIC..."
@@ -253,45 +333,29 @@ build_component() {
 
 # ----------------- Main Script -----------------
 
+echo "---------------------------------------------------------------------"
+echo "--------------------- build-digital-twin.sh -------------------------"
+echo "---------------------------------------------------------------------"
+echo ""
+
 # Parse command-line arguments
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        -hostip)
-            if [[ -n "$2" && ! "$2" =~ ^- ]]; then
-                HOST_IP="$2"
-                shift 2
-            else
-                echo "Error: -hostip flag requires an argument."
-                usage
-            fi
-            ;;
-        -mode)
-            if [[ "$2" == "core" || "$2" == "edge" ]]; then
-                MODE="$2"
-                shift 2
-            else
-                echo "Error: -mode flag requires either 'core' or 'edge'."
-                usage
-            fi
-            ;;
-        -int)
-            if [[ -n "$2" && ! "$2" =~ ^- ]]; then
-                INTERFACE="$2"
-                shift 2
-            else
-                echo "Error: -int flag requires an argument."
-                usage
-            fi
-            ;;
-        *)
-            # Check if the provided flag is in the list of valid flags
-            if [[ ! " ${VALID_FLAGS[*]} " =~ " $1 " ]]; then
-                echo "Error: Unknown flag '$1'."
-                usage
-            fi
-            ;;
-    esac
-done
+validate_cli "$@"  # Pass all arguments to the validate_cli function
+
+# Check if debug mode is enabled and print all runtime options
+if [ "$DEBUG_MODE" = true ]; then
+echo "----------------- Debugging enabled... -----------------"
+    echo "Mode: $MODE"
+    echo "Host IP: $HOST_IP"
+    echo "Interface (null=active interface check): $INTERFACE"
+    echo "Total UEs: $TOTAL_UES"
+    echo "Local UEs: $LOCAL_UES"
+    echo "UE Start Index: $UE_START_IDX"
+fi
+
+if [ "$LOCAL_UES" -gt "$TOTAL_UES" ]; then
+    echo "Error: Local UEs cannot exceed total UEs."
+    exit 1
+fi
 
 # Validate host OS
 echo ""
@@ -342,5 +406,9 @@ else
    echo "Edge RAN"
 fi
 
-# Continue with the rest of your script here...
+echo ""
+echo ""
+echo "----------------- Build of ${MODE^^} RAN Digital Twin Complete -----------------"
+echo ""
+echo ""
 
