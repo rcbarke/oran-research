@@ -36,7 +36,7 @@
 # Mode
 MODE="core" # Setup core RAN by default
 
-# IP configuration
+# Host IP configuration
 CORE_RAN_IP="10.0.2.15"
 UE_NODE_IP="10.0.2.100"
 HOST_IP=${CORE_RAN_IP} # Setup core RAN by default
@@ -45,10 +45,18 @@ DEFAULT_GATEWAY="10.0.2.1"
 DEFAULT_DNS="8.8.8.8"
 INTERFACE=""  # Default empty, will be set if provided by -int flag
 
+# Private Application IPs. If any of these are changed, destruct-digital-twin.sh must run 
+# to destroy docker bridged adapters at this address range. Modifying this section is not
+# recommended.
+RIC_NET_ADDR="192.168.63.0"
+RIC_NETMASK="255.255.255.0"
+UE_NET_ADDR="10.45.1.0"
+UE_NETMASK="255.255.255.0"
+
 # Default values for UE-related flags
 TOTAL_UES=3       # Total number of UEs across the network
 LOCAL_UES=3       # Number of UEs on this machine
-UE_START_IDX=0    # Starting index of UEs on this machine
+UE_START_IDX=1    # Starting index of UEs on this machine
 
 # Define valid flags
 VALID_FLAGS=("-mode" "-hostip" "-int" "-ue" "-ue_local" "-ue_idx")
@@ -64,7 +72,7 @@ usage() {
     echo "  -int <iface> Specify the network interface to configure static IP."
     echo "  -ue Specify the total amount of UEs to build across the network. Default 3."
     echo "  -ue_local Specify the amount of UEs to build on this machine. Must be <= total UEs. Default 3."
-    echo "  -ue_idx Specify the starting index of the UEs on this machine. Cannot overlap with remote server if multiple machines are used. Default 0."
+    echo "  -ue_idx Specify the starting index of the UEs on this machine. Cannot overlap with remote server if multiple machines are used. Default 1. Cannot specify 0."
     exit 1
 }
 
@@ -118,7 +126,10 @@ validate_cli() {
                 fi
                 ;;
             -ue_idx)
-                if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+                if [[ $2 -eq 0 ]]; then
+                    echo "Error: -ue_idx 0 is reserved."
+                    usage
+                elif [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
                     UE_START_IDX="$2"
                     shift 2
                 else
@@ -296,7 +307,7 @@ build_component() {
     case "$component" in
         "open5gs")
             echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
-            ./compile/open5gs.sh 3
+            ./compile/open5gs.sh $TOTAL_UES
             ;;
         "osc-ric")
             echo "Building component for OSC RIC..."
@@ -308,7 +319,7 @@ build_component() {
             ;;
         "srsue")
             echo "Building component for srs4G srsUE..."
-            ./compile/srs4g.sh 3
+            ./compile/srs4g.sh $LOCAL_UES
             ;;
         "gnuradio")
             echo "Building component for GNU Radio: Modulated RF waveform for all UEs..."
