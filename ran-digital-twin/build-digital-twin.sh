@@ -58,6 +58,21 @@ usage() {
     exit 1
 }
 
+# Function to validate the host OS
+validate_os() {
+    # Get the distribution name and release version
+    os_name=$(lsb_release -si)
+    os_version=$(lsb_release -sr)
+
+    # Check if the OS is Ubuntu and the version is 22.04 (any subversion)
+    if [ "$os_name" != "Ubuntu" ] || [[ "$os_version" != 22.04* ]]; then
+        echo "Error: This script requires Ubuntu 22.04. Detected OS: $os_name $os_version."
+        exit 1
+    fi
+
+    echo "OS validation passed: $os_name $os_version."
+}
+
 # Function to check if IP and subnet are available
 check_ip_availability() {
     echo "Checking if IP address $HOST_IP is available..."
@@ -144,6 +159,96 @@ configure_static_ip() {
     echo "Static IP configuration completed successfully."
 }
 
+# Function to build dependencies based on the provided component
+build_dependencies() {
+    component=$1
+
+    case "$component" in
+        "os") 
+            echo "Building dependencies for OS.."
+            sudo apt-get install vim-gtk meld net-tools iperf iperf3
+            ;;
+        "open5gs")   
+            echo "Building dependencies for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
+            sudo apt-get install libzmq3-dev
+            sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
+            ;;
+        "osc-ric")
+            echo "Building dependencies for OSC RIC..."
+            # Insert the commands to build dependencies for OSC RIC
+            ;;
+        "srsgnb")
+            echo "Building dependencies for srsProject srsgNB: Disaggregated CU/DU gNB..."
+            sudo apt-get install libzmq3-dev
+            sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
+            # Insert the commands to build dependencies for srsgNB
+            ;;
+        "srsue")
+            echo "Building dependencies for srs4G srsUE..."
+            # Insert the commands to build dependencies for srsUE
+            ;;
+        "gnuradio")
+            echo "Building dependencies for GNU Radio: Modulated RF waveform for all UEs..."
+            # Insert the commands to build dependencies for GNU Radio
+            ;;
+        "kpimon")
+            echo "Building dependencies for KPIMon xApp: Performance metric monitoring at core..."
+            # Insert the commands to build dependencies for KPIMon
+            ;;
+        "grafana")
+            echo "Building dependencies for Grafana xApp: Performance metric monitoring at gNB..."
+            # Insert the commands to build dependencies for Grafana
+            ;;
+        *)
+            echo "Error: Invalid component '$component'. Please specify a valid component."
+            echo "Valid components are: open5gs, osc-ric, srsgnb, srsue, gnuradio, kpimon, grafana."
+            exit 1
+            ;;
+    esac
+}
+
+# Function to build component based on the provided component
+build_component() {
+    component=$1
+
+    case "$component" in
+        "open5gs")
+            echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
+
+            ;;
+        "osc-ric")
+            echo "Building component for OSC RIC..."
+
+            ;;
+        "srsgnb")
+            echo "Building component for srsProject srsgNB: Disaggregated CU/DU gNB..."
+
+            ;;
+        "srsue")
+            echo "Building dependencies for srs4G srsUE..."
+
+            ;;
+        "gnuradio")
+            echo "Building dependencies for GNU Radio: Modulated RF waveform for all UEs..."
+
+            ;;
+        "kpimon")
+            echo "Building dependencies for KPIMon xApp: Performance metric monitoring at core..."
+
+            ;;
+        "grafana")
+            echo "Building dependencies for Grafana xApp: Performance metric monitoring at gNB..."
+
+            ;;
+        *)
+            echo "Error: Invalid component '$component'. Please specify a valid component."
+            echo "Valid components are: open5gs, osc-ric, srsgnb, srsue, gnuradio, kpimon, grafana."
+            exit 1
+            ;;
+    esac
+}
+
+
 # ----------------- Main Script -----------------
 
 # Parse command-line arguments
@@ -186,8 +291,20 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
-# Output the selected mode and host IP
-echo "Configuring $MODE RAN machine with host IP $HOST_IP."
+# Validate host OS
+echo ""
+echo ""
+echo "----------------- Checking host OS and installing initial dependencies... -----------------"
+echo ""
+echo ""
+validate_os
+build_dependencies "os"
+
+echo ""
+echo ""
+echo "----------------- Host ${MODE^^} machine IP configuration: $HOST_IP... -----------------"
+echo ""
+echo ""
 
 # Extract the subnet from the provided IP address (/24 subnet)
 IFS='.' read -r -a ip_parts <<< "$HOST_IP"
@@ -198,6 +315,30 @@ check_ip_availability
 
 # Configure the static IP
 configure_static_ip
+
+# Output the selected mode and host IP
+echo ""
+echo ""
+echo "----------------- Building ${MODE^^} RAN Digital Twin -----------------"
+echo ""
+echo ""
+
+if [ "$MODE" = "core" ]; then
+   # Core RAN
+
+   # Open5GS
+   app="open5gs" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
+
+   
+else
+   # Edge RAN
+   echo "Edge RAN"
+fi
 
 # Continue with the rest of your script here...
 
