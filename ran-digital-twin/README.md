@@ -154,6 +154,7 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 - Add `deploy-digital-twin.sh` to build the network stack in sequence across multiple VM terminals
 - Enhance `build-digital-twin.sh` to prompt for a `deploy-digital-twin.sh` call, passing in all built UEs 
 - Expand signal modulation and RF waveform processing using GNU Radio to automatically synchronize with  `build-digital-twin.sh` 
+- Add `destruct-digital-twin.sh` to undeploy the network stack and destroy all configuration, including all docker bridged network adapters
 - Add support for edge RAN deployments: Hosting UEs from a separate VM for processing offload
 - Integration with additional xApps for enhanced performance monitoring and network optimization
 
