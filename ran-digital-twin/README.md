@@ -74,19 +74,19 @@ Script to build and configure the OSC RIC, supporting machine virtualization and
 
 ### compile/srs4G.sh
 
-Script to build and configure the srsRAN 4G UE. This adds support for multiple dedicated UE instances, using the srsRAN project.
+Script to build and configure the srsRAN 4G package. This is needed to obtain the srsUE binary.
 
 ---
 
 ### compile/srs_project.sh
 
-Script to build the srsRAN Project, which includes various components such as the gNB (CU/DU).
+Script to build the srsRAN Project package, which includes various components such as the gNB (CU/DU).
 
 ---
 
 ### compile/srsgnb.sh
 
-Script to build the disaggregated CU/DU for the srsRAN gNB.
+Script to build the disaggregated CU/DU for the srsRAN gNB. Also configures the gNB to connect to the E2 link on the modified RIC subnet.
 
 ---
 
@@ -100,7 +100,18 @@ This script is automatically called during built. It can be called outside of bu
 ### Usage
 ```bash
 ./srsue.sh <NUM_UES> <START_INDEX>
+./srsue.sh 3 1
+./srsue.sh 3 3
+./srsue.sh 6 3
+./srsue.sh 10 1
+./srsue.sh 10 10
 ```
+Examples:
+- Build 3 UEs, UE1 through UE3
+- Build 3 UEs, UE4 through UE6
+- Build 6 UEs, UE4 through UE9
+- Build 10 UEs, UE1 through UE10
+- Build 10 UEs, UE11 through UE20
 
 ### Configuration Files (`configs/`)
 
