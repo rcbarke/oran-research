@@ -279,6 +279,14 @@ sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
             sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
+        "srs_project")   
+            echo "Building dependencies for srsRAN Project: 5G Protocol stack..."
+            sudo apt-get install libzmq3-dev
+            sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
+            ;;
+        "osc-ric")
+            echo "Building dependencies for OSC RIC..."
+            ;;
         "open5gs")   
             echo "Building dependencies for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
             sudo apt-get install libzmq3-dev
@@ -323,6 +331,14 @@ build_component() {
     component=$1
 
     case "$component" in
+        "srs_project")
+            SRSBUILD="./srsRAN_Project/build"
+            if [[ $SRSBUILD == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
+                # Force build, build folder does not exist, or build folder is empty
+                echo "Building component for srsRAN Project: 5G Protocol stack..."
+                ./compile/srs_project.sh
+            fi
+            ;;
         "open5gs")
             echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
             echo "Calling ./compile/open5gs.sh with TOTAL_UES=$TOTAL_UES and BUILD_SRSP=$BUILD_SRSP"
@@ -421,6 +437,14 @@ echo ""
 
 if [ "$MODE" = "core" ]; then
    # Core RAN
+
+   # srs_project
+   app="srs_project" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
 
    # Open5GS
    app="open5gs" 

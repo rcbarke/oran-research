@@ -50,3 +50,6 @@ sed -i "/^e2:/,/^ *[^ ]/s|^ *bind_addr:.*|  bind_addr: $RIC_RMR|g" $CONFIG_FILE
 sed -i "/^e2:/,/^ *[^ ]/s|^ *port:.*|  port: $RIC_PORT|g" $CONFIG_FILE
 
 echo "Successfully updated the 'e2' section in $CONFIG_FILE with RIC_RMR=$RIC_RMR, RIC_E2=$RIC_E2, and RIC_PORT=$RIC_PORT."
+
+echo "Staging $CONFIG_FILE into ./srsRAN_Project/build/apps/gnb/..."
+cp $CONFIG_FILE "./srsRAN_Project/build/apps/gnb/gnb_zmq.yaml"

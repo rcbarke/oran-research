@@ -105,29 +105,6 @@ build_subscriber_db() {
     echo "Successfully built $CONFIG_FILE with $TOTAL_UEs."
 }
 
-# Function to build the srsProject repo with ZEROMQ Enabled
-build_srsran_project() {
-    echo "srsRAN Project build initiated..."
-    
-    # Check if the oran-sc-ric directory exists, and if so, skip cloning
-    if [ -d "./srsRAN_Project" ]; then
-        echo "srsRAN Project directory already exists. Skipping clone."
-        cd srsRAN_Project/build
-    else
-        # Clone the repository
-        echo "Cloning srsRAN_Project..."
-        git clone https://github.com/srsRAN/srsRAN_Project.git
-        cd srsRAN_Project
-        mkdir build
-        cd build
-    fi
-    
-    # Compile and build srsRAN_Project with ZeroMQ
-    cmake ../ -DENABLE_EXPORT=ON -DENABLE_ZEROMQ=ON
-    make -j`nproc`
-    cd ../../
-}
-
 # Function to configure the subscriber database with the built file
 config_subscriber_db() {
     # Ensure the source file exists
@@ -164,21 +141,13 @@ set_env_file() {
 }
 
 # Check for TOTAL_UEs argument
-if [[ $# -ne 2 ]]; then
-    echo "Usage: $0 <TOTAL_UEs> <BUILD_SRSP>"
+if [[ $# -ne 1 ]]; then
+    echo "Usage: $0 <TOTAL_UEs>"
     exit 1
 fi
 
 # Build subscriber database
 build_subscriber_db $1
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-SRSBUILD="./srsRAN_Project/build" 
-
-# Build srsran_project
-if [[ $2 == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
-    # Force build, build folder does not exist, or build folder is empty
-    build_srsran_project
-fi
 
 # Configure subscriber database
 config_subscriber_db
