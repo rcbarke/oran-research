@@ -296,7 +296,7 @@ build_dependencies() {
 
     case "$component" in
         "os") 
-            echo "Building dependencies for OS.."
+            echo "Building dependencies for OS..."
             sudo apt-get install vim-gtk meld net-tools xterm dbus-x11 iperf iperf3 curl
             for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
             sudo apt-get update
@@ -557,6 +557,5 @@ echo ""
 # gnome-terminal --tab --title="Open5GS Build" -- bash -c "echo 'Building #Open5GS...'; ./build/open5gs.sh; exec bash"
 
 # BUGS: 
-# 1. subscriber_db is double-writing ue1 again
-# 2. Key is not reading into each ue file correctly as "k". All UEs have the first UE's key. 
-# All other usim values are correct.
+# - Key is not reading into each ue file correctly as "k". All UEs have the first UE's key. 
+# - All other usim values are correct.

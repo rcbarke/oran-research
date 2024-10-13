@@ -59,17 +59,28 @@ build_subscriber_db() {
     TEMPLATE_AMBR=$(echo "$TEMPLATE_LINE" | cut -d ',' -f7)
     TEMPLATE_IP=$(echo "$TEMPLATE_LINE" | cut -d ',' -f8)
 
-    # Write ue1 if the start index is less than or equal to 1 and within range
+    # Check if ue1 should be written (i.e., if ue1 falls within the specified range)
     if (( START_INDEX == 1 )); then
+        # Write ue1 as the first UE
         echo "$TEMPLATE_LINE" >> "$CONFIG_FILE"
+    else
+        # Generate new ue1-like UE with incremented values if ue1 is outside the range
+        UE_DIFF=$((START_INDEX - 1))
+        NEW_UE_ID="ue$(printf "%02d" "$START_INDEX")"
+        NEW_IMSI=$(printf "%015d" $((10#$TEMPLATE_IMSI + UE_DIFF)))
+        NEW_KEY=$(printf "%032s" "00112233445566778899aabb$(printf "%08x" $((0x${TEMPLATE_KEY:24} + UE_DIFF)))")
+        NEW_IP=$(echo "$TEMPLATE_IP" | awk -F '.' '{print $1"."$2"."$3"."($4+'$UE_DIFF')}')
+
+        NEW_UE_LINE="$NEW_UE_ID,$NEW_IMSI,$NEW_KEY,$TEMPLATE_OPC,$TEMPLATE_AUTH,$TEMPLATE_PORT,$TEMPLATE_AMBR,$NEW_IP"
+        echo "$NEW_UE_LINE" >> "$CONFIG_FILE"
     fi
 
-    # Generate additional UEs starting from the START_INDEX
-    for (( i=START_INDEX; i<START_INDEX+TOTAL_UEs; i++ )); do
+    # Generate additional UEs starting from the next index after ue1 or from the start index
+    for (( i=START_INDEX+1; i<START_INDEX+TOTAL_UEs; i++ )); do
         UE_INDEX=$i
 
         # Increment the ueX field (e.g., ue10, ue11, etc.)
-        NEW_UE_ID="ue$(printf "%02d" $UE_INDEX)"
+        NEW_UE_ID="ue$(printf "%02d" "$UE_INDEX")"
 
         # Increment IMSI by the UE_INDEX value, ensuring 15 digits are preserved
         NEW_IMSI=$(printf "%015d" $((10#$TEMPLATE_IMSI + UE_INDEX - 1)))
