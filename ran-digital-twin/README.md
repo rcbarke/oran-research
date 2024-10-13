@@ -123,9 +123,15 @@ Examples:
 
 ### Configuration Files (`configs/`)
 
-- **`subscriber_db.csv`**: Contains the subscriber information such as IMSI, Key, and OPC values. The script uses this file to populate each UE configuration.
+Staged to `./srsRAN_Project/docker/open5gs` with `./open5gs.env`:
+- **`subscriber_db.csv`**: Contains the subscriber information such as IMSI, Key, and OPC values. The script will ensure that values generated for each unique UE index do not overlap, even across VMs.
+
+Staged to `./srsRAN_Project/build/apps/gnb` with `./gnb` executable:
 - **`gnb_zmq.yaml`**: A template configuration file used to generate gnb configuration files. Synchronized with modified RIC configuration.
-- **`ue_template_zmq.conf`**: A template configuration file used to generate UE-specific configuration files.
+
+Staged to `./srsRAN_4G/build/srsue/src` with  `./srsue` executable:
+- **`ue_template_zmq.conf`**: A template configuration file used to generate UE-specific configuration files, which are staged. Template not staged.
+- **`multi_ue_scenario.grc`**: A template configuration file used to generate UE-specific configuration files.
 
 The **`srsue.sh`**: script will create individual configuration files for each UE (ueX_zmq.conf) based on this template and the data from subscriber_db.csv.
 
@@ -143,9 +149,11 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 ## Installed xApps 
 ### Must deploy RAN before deploying xApps
 
-1. **KPIMon**: Monitors performance metrics at the core network via terminal CLI. 
+1. **KPIMon**: Monitors performance metrics at the core network via terminal CLI. To deploy from `./oran-sc-ric`:
+`docker compose exec python_xapp_runner ./kpm_mon_xapp.py --metrics=DRB.UEThpDl,DRB.UEThpUl --kpm_report_style=5`
 
-2. **Grafana**: Monitors performance metrics at the gNB via a browser window @ `localhost:3300`.
+2. **Grafana**: Monitors performance metrics at the gNB via a browser window @ `localhost:3300`. To deploy from `./srsRAN_Project`:
+`sudo docker compose -f docker/docker-compose.yml up grafana`
 
 ---
 
