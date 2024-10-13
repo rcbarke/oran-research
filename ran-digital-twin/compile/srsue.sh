@@ -60,7 +60,6 @@ get_usim() {
     echo "Updated USIM for UE${UE_INDEX} in ${UE_CONFIG}"
 }
 
-
 # Function to generate UEs
 generate_ues() {
     local NUM_UES=$1      # Number of UEs to generate
