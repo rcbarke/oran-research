@@ -2,7 +2,9 @@
 
 ## Overview
 
-This repository contains scripts and configurations for building a RAN (Radio Access Network) Digital Twin simulation. The simulation architecture includes a 5G core network, an RIC (RAN Intelligent Controller), disaggregated gNB (CU/DU), and multiple dedicated UE instances. It also supports 4G UEs with the `srs4G` build option. The entire setup is designed to be modular, allowing customization and deployment in different modes (Core, Edge, etc.).
+This repository contains scripts and configurations for building a RAN (Radio Access Network) Digital Twin simulation. The simulation architecture includes a 5G core network, an RIC (RAN Intelligent Controller), disaggregated gNB (CU/DU), and multiple dedicated UE instances. The entire setup is designed to be modular, allowing customization and deployment in different modes (Core, Edge, etc.).
+
+**This Digital Twin is designed to run over one or more VirtualBox VMs. IP override functionality will need to be leveraged if installed locally. Virtualization is strongly recommended to avoid configuration conflicts. **
 
 ### Key Components
 
