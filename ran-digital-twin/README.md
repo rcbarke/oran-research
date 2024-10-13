@@ -31,6 +31,7 @@ This repository contains scripts and configurations for building a RAN (Radio Ac
 ├── build-digital-twin.sh       # Main script to build and deploy the RAN Digital Twin
 ├── srsue.sh                   # Generates srsUE configuration files
 └── README.md                  # Documentation for the project
+```
 
 ## Scripts
 
@@ -41,3 +42,35 @@ The primary script for building the entire RAN Digital Twin environment. This sc
 
 ```bash
 ./build-digital-twin.sh [options]
+```
+
+### Configuration Files (`configs/`)
+
+- **`subscriber_db.csv`**: Contains the subscriber information such as IMSI, Key, and OPC values. The script uses this file to populate each UE configuration.
+- **`gnb_zmq.conf`**: A template configuration file used to generate gnb configuration files. Synchronized with modified RIC configuration.
+- **`ue_template_zmq.conf`**: A template configuration file used to generate UE-specific configuration files.
+
+The **`srsue.sh`**: script will create individual configuration files for each UE (ueX_zmq.conf) based on this template and the data from subscriber_db.csv.
+
+## Build Process
+
+1. **Clone and build**: After running the scripts, the following directories will be created and populated with source files and build outputs:
+   - `oran-sc-ric/`: Contains the OSC RIC build.
+   - `srsRAN_4G/`: Contains the build and binaries for the srs4G UE.
+   - `srsRAN_Project/`: Contains the build and binaries for the srsRAN project.
+
+2. **Generate UEs**: Use the `srsue.sh` script to generate configuration files for the required number of UEs. The configuration files are staged in the appropriate directories.
+
+3. **Run the simulation**: Once everything is built, the simulation is ready for deployment, with the RAN architecture functioning in a virtualized environment.
+
+---
+
+## Future Enhancements
+
+- Add support for edge RAN deployments.
+- Integration with additional xApps for enhanced performance monitoring.
+- Expand signal modulation and RF waveform processing using GNU Radio.
+
+## Contact
+
+For further assistance, feel free to contact the **Clemson University IS-WiN Laboratory ORAN team** led by Tolunay Sefyi, Ryan Barker, and Basir Reze.
