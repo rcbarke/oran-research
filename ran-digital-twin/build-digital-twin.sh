@@ -524,6 +524,14 @@ if [ "$MODE" = "core" ]; then
    echo ""
    build_component "${app}"  
    echo ""
+
+   # gnuradio
+   app="gnuradio" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
    
 else
    # Edge RAN
