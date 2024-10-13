@@ -140,8 +140,7 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 
 ## References
 
-The srsProject Documentation was leveraged as a starting point for this repository, which is an orchestration framework for combining several packages and automating their configuration:  
-[srsProject Documentation](https://docs.srsran.com/projects/project/en/latest/tutorials/source/near-rt-ric/source/index.html)
+The [srsProject Documentation](https://docs.srsran.com/projects/project/en/latest/tutorials/source/near-rt-ric/source/index.html) was leveraged as a starting point for this repository, which is an orchestration framework for combining several packages and automating their configuration:  
 
 ## Contact
 
