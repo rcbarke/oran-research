@@ -556,6 +556,5 @@ echo ""
 # Method to launch terminal tabs for deploy script...
 # gnome-terminal --tab --title="Open5GS Build" -- bash -c "echo 'Building #Open5GS...'; ./build/open5gs.sh; exec bash"
 
-# BUGS: 
-# - Key is not reading into each ue file correctly as "k". All UEs have the first UE's key. 
-# - All other usim values are correct.
+# Known Bugs:
+# - None

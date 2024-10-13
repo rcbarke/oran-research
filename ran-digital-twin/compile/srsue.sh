@@ -43,7 +43,7 @@ get_usim() {
 
     # Generate IMEI based on the template and increment for each UE
     IMEI_BASE=$(grep "imei = " "$BASE_CONFIG" | cut -d '=' -f2 | tr -d '[:space:]')
-    IMEI=$(printf "%015d" $((IMEI_BASE + UE_INDEX)))
+    IMEI=$(printf "%015d" $((IMEI_BASE + UE_INDEX - 1)))
 
     # Escape any special characters in the values
     IMSI_ESCAPED=$(echo "$IMSI" | sed 's/[&/\]/\\&/g')
@@ -53,12 +53,13 @@ get_usim() {
 
     # Update the [usim] section in the configuration file using the escaped values
     sed -i "\|\[usim\]|,\|\[.*\]|s|imsi = .*|imsi = $IMSI_ESCAPED|g" "$UE_CONFIG"
-    sed -i "\|\[usim\]|,\|\[.*\]|s|k = .*|k = $K_ESCAPED|g" "$UE_CONFIG"
+    sed -i "\|\[usim\]|,\|\[.*\]|s|k    = .*|k    = $K_ESCAPED|g" "$UE_CONFIG"
     sed -i "\|\[usim\]|,\|\[.*\]|s|opc  = .*|opc  = $OPC_ESCAPED|g" "$UE_CONFIG"
     sed -i "\|\[usim\]|,\|\[.*\]|s|imei = .*|imei = $IMEI_ESCAPED|g" "$UE_CONFIG"
 
     echo "Updated USIM for UE${UE_INDEX} in ${UE_CONFIG}"
 }
+
 
 # Function to generate UEs
 generate_ues() {
