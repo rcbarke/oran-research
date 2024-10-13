@@ -68,7 +68,7 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 3. **Run the simulation**: Once everything is built, the simulation is ready for deployment, with the RAN architecture functioning in a virtualized environment.
 
 ## Installed xApps 
-# Must deploy RAN before deploying xApps
+### Must deploy RAN before deploying xApps
 
 1. **KPIMon**: Monitors performance metrics at the core network via terminal CLI. 
 
