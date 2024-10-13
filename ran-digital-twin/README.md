@@ -47,6 +47,60 @@ The primary script for building the entire RAN Digital Twin environment. This sc
 ```bash
 ./build-digital-twin.sh [options]
 ```
+### Options:
+
+- `-mode [core|edge]`: Specify the mode of the RAN network (default: core).
+- `-hostip <ip_address>`: Override the default static IP for the host machine.
+- `-int <interface>`: Specify the network interface to configure the static IP.
+- `-srsP [T|F]`: Enable/Disable building the srsRAN Project.
+- `-srs4G [T|F]`: Enable/Disable building the srs4G UEs.
+- `-ue <num>`: Specify the total number of UEs to build (default: 3).
+- `-ue_local <num>`: Specify the number of UEs to build on this machine.
+- `-ue_idx <index>`: Specify the starting index of UEs for this machine (default: 1).
+
+---
+
+### compile/open5gs.sh
+
+Script to build and configure the Open5GS 5GC Core (MME/AMF/SGW/PGW).
+
+---
+
+### compile/osc-ric.sh
+
+Script to build and configure the OSC RIC, supporting machine virtualization and performance monitoring.
+
+---
+
+### compile/srs4G.sh
+
+Script to build and configure the srsRAN 4G UE. This adds support for multiple dedicated UE instances, using the srsRAN project.
+
+---
+
+### compile/srs_project.sh
+
+Script to build the srsRAN Project, which includes various components such as the gNB (CU/DU).
+
+---
+
+### compile/srsgnb.sh
+
+Script to build the disaggregated CU/DU for the srsRAN gNB.
+
+---
+
+### srsue.sh
+
+This script generates multiple UE configuration files (`ue*_zmq.conf`) based on the number of UEs and the starting index provided as arguments. It retrieves USIM data (IMSI, Key, OP/OPc) from the `subscriber_db.csv` file and updates the configuration for each UE.
+This script is automatically called during built. It can be called outside of build to generate additional UEs, but be wary that any UE not contained within the `subscriber_db.csv` file will not be able to subscribe to the network!
+
+---
+
+### Usage
+```bash
+./srsue.sh <NUM_UES> <START_INDEX>
+```
 
 ### Configuration Files (`configs/`)
 
