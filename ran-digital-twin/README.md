@@ -58,12 +58,12 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 
 ## Build Process
 
-1. **Clone and build**: After running the scripts, the following directories will be created and populated with source files and build outputs:
+1. **Clone and build**: After running the build script, the following directories will be created and populated with source files and build outputs:
    - `oran-sc-ric/`: Contains the OSC RIC build.
    - `srsRAN_4G/`: Contains the build and binaries for the srs4G UE.
    - `srsRAN_Project/`: Contains the build and binaries for the srsRAN project.
 
-2. **Generate UEs**: Use the `srsue.sh` script to generate configuration files for the required number of UEs. The configuration files are staged in the appropriate directories.
+2. **Generate UEs**: `srsue.sh` script is leveraged during build to generate configuration files for the passed in number of UEs. Build automatically stages all configuration files in the appropriate directories for deployment.
 
 3. **Run the simulation**: Once everything is built, the simulation is ready for deployment, with the RAN architecture functioning in a virtualized environment.
 
