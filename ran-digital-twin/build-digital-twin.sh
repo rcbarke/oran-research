@@ -3,9 +3,9 @@
 # build-digital-twin.sh
 #
 # Ryan Barker
-# Clemson University IS-WiN Laboratory 
+# Clemson University IS-WiN Laboratory
 # ORAN team
-# 
+#
 # Description: Automated RAN Digital Twin simulation containing the following software stack:
 #
 # Architecture:
@@ -21,17 +21,27 @@
 # 1. kpimon: Performance metric monitoring at core within shell terminal
 # 2. grafana: Performance metric monitoring at gNB within firefox
 #
-# Script flow:
-# To be documented upon completion.
-# 
-# Pre-Conditions and Assumptions:
-# 1. This script works by assuming the host machine's IP will be statically assigned in a private IP subnet. The default address range is 10.0.2.0/24. If this will create a network conflict, it can be overridden with the -hostip commmand, which will automatically infer /24 subnets.
-# 2. The private subnets indicated at the top of the file are reserved for docker applications contained within this script. They cannot be in use anywhere else on the private network, else the RAN digital twin will fail.
+# Script Flow:
+# - Parses CLI arguments to configure the build based on user input (e.g., number of UEs, IP addresses).
+# - Automatically builds and configures core RAN components including Open5GS, OSC RIC, and srsRAN gNB/UEs.
+# - Validates host OS and dynamically assigns IP addresses within the provided subnet.
+# - Configures static IP and builds dependencies based on the specified components.
+# - Stages generated UE configuration files and synchronizes them with Open5GS subscriber database.
 #
-# Optional CLI arguments (see usage below):
-# 1. mode: Enables or disables the build of the 5G core, RIC, and gNB. gNB at the edge is not # currently supported. Default = core.
-# 2. hostip: Overrides the default host machine IP to configure with the IP address specified.
-# Default = CORE_RAN_IP.
+# Pre-Conditions and Assumptions:
+# 1. This script assumes the host machine's IP is statically assigned in a private IP subnet (default: 10.0.2.0/24).
+# 2. The private subnets indicated are reserved for Docker applications in this script. Any conflict on the private network will cause the build to fail.
+# 3. Virtualization is recommended to avoid configuration conflicts, as the script uses bridged network adapters.
+#
+# Optional CLI Arguments:
+# 1. mode: Enables/disables the build of the 5G core, RIC, and gNB. Default is core.
+# 2. hostip: Overrides the default host machine IP to configure with the specified IP address.
+# 3. int: Specify the network interface to configure static IP.
+# 4. srsP: Enables/disables building the srsRAN project (T/F). Default = T.
+# 5. srs4G: Enables/disables building the srsRAN 4G UE package (T/F). Default = T.
+# 6. ue: Specify the total number of UEs to build across the network. Default = 3.
+# 7. ue_local: Specify the number of UEs to build on this machine. Default = total UEs.
+# 8. ue_idx: Specify the starting index for UEs on this machine. Default = 1.
 
 # Mode
 MODE="core" # Setup core RAN by default
