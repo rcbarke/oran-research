@@ -56,11 +56,11 @@ UE_NETMASK="255.255.255.0"
 
 # Default values for UE-related flags
 TOTAL_UES=3       # Total number of UEs across the network
-LOCAL_UES=3       # Number of UEs on this machine
+LOCAL_UES=""     # Number of UEs on this machine, will be set after parsing flags.
 UE_START_IDX=1    # Starting index of UEs on this machine. One based indexing.
 
 # Define valid flags
-VALID_FLAGS=("-mode" "-hostip" "-int" "-ue" "-ue_local" "-ue_idx")
+VALID_FLAGS=("-debug" "-mode" "-hostip" "-int" "-srsP" "-ue" "-ue_local" "-ue_idx")
 DEBUG_MODE=false
 
 # Function to display usage information
@@ -73,7 +73,7 @@ usage() {
     echo "  -int <iface> Specify the network interface to configure static IP."
     echo "  -srsP [T|F] Specify whether or not to build srsRAN Project from source."
     echo "  -ue Specify the total amount of UEs to build across the network. Default 3."
-    echo "  -ue_local Specify the amount of UEs to build on this machine. Must be <= total UEs. Default 3."
+    echo "  -ue_local Specify the amount of UEs to build on this machine. Must be <= total UEs. Default total UEs."
     echo "  -ue_idx Specify the starting index of the UEs on this machine. Cannot overlap with remote server if multiple machines are used. Default 1. Cannot specify 0."
     exit 1
 }
@@ -341,8 +341,8 @@ build_component() {
             ;;
         "open5gs")
             echo "Building component for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
-            echo "Calling ./compile/open5gs.sh with TOTAL_UES=$TOTAL_UES and BUILD_SRSP=$BUILD_SRSP"
-            ./compile/open5gs.sh $TOTAL_UES $BUILD_SRSP
+            echo "Calling ./compile/open5gs.sh with TOTAL_UES=$TOTAL_UES $UE_START_IDX"
+            ./compile/open5gs.sh $TOTAL_UES $UE_START_IDX
             ;;
         "osc-ric")
             echo "Building component for OSC RIC..."
@@ -353,8 +353,8 @@ build_component() {
             ./compile/srsgnb.sh $RIC_NET_ADDR
             ;;
         "srsue")
-            echo "Building component for srs4G srsUE..."
-            ./compile/srs4g.sh $LOCAL_UES $UE_START_IDX
+            echo "Building component for srsUE..."
+            ./compile/srsue.sh $LOCAL_UES $UE_START_IDX
             ;;
         "gnuradio")
             echo "Building component for GNU Radio: Modulated RF waveform for all UEs..."
@@ -386,6 +386,11 @@ echo ""
 
 # Parse command-line arguments
 validate_cli "$@"  # Pass all arguments to the validate_cli function
+
+# Set LOCAL_UES to TOTAL_UES if -ue_local is not provided
+if [[ -z "$LOCAL_UES" ]]; then
+    LOCAL_UES=$TOTAL_UES
+fi
 
 # Check if debug mode is enabled and print all runtime options
 if [ "$DEBUG_MODE" = true ]; then
@@ -470,7 +475,7 @@ if [ "$MODE" = "core" ]; then
    build_component "${app}"  
    echo ""
 
-   # srs4G
+   # srsue
    app="srsue" 
    echo "----- ${app} -----"
    build_dependencies "${app}"
@@ -480,7 +485,7 @@ if [ "$MODE" = "core" ]; then
    
 else
    # Edge RAN
-   echo "Edge RAN"
+   echo "Edge RAN: Currently unsupported..."
 fi
 
 echo ""
