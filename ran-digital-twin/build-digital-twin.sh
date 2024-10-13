@@ -360,8 +360,6 @@ sudo apt-get update
     esac
 }
 
-#            gnome-terminal --tab --title="Open5GS Build" -- bash -c "echo 'Building #Open5GS...'; ./build/open5gs.sh; exec bash"
-
 # Function to build component based on the provided component
 build_component() {
     component=$1
@@ -542,7 +540,8 @@ if [ "$MODE" = "core" ]; then
    echo ""
    build_component "${app}"  
    echo ""
-   
+
+   # Add deploy script prompt here...
 else
    # Edge RAN
    echo "Edge RAN: Currently unsupported..."
@@ -554,3 +553,5 @@ echo "----------------- Build of ${MODE^^} RAN Digital Twin Complete -----------
 echo ""
 echo ""
 
+# Method to launch terminal tabs for deploy script...
+# gnome-terminal --tab --title="Open5GS Build" -- bash -c "echo 'Building #Open5GS...'; ./build/open5gs.sh; exec bash"
