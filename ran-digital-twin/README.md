@@ -6,6 +6,12 @@ This repository contains scripts and configurations for building a RAN (Radio Ac
 
 **This Digital Twin is designed to run over one or more VirtualBox VMs. IP override functionality will need to be leveraged if installed locally. Virtualization is strongly recommended to avoid configuration conflicts.**
 
+### Prerequisites
+
+- **Operating System**: Ubuntu 22.04.1
+
+The build scripts will automatically install and configure all necessary dependencies. Ensure you are running the correct version of Ubuntu to avoid compatibility issues.
+
 ### Key Components
 
 - **Open5GS 5GC Core**: Core Network components such as MME/AMF/SGW/PGW.
