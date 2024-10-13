@@ -57,11 +57,16 @@ mask_network_address() {
 masked_address=$(mask_network_address)
 
 # Check if the oran-sc-ric directory exists, and if so, skip cloning
-if [ -d "./oran-sc-ric" ]; then
-    echo "OSC RIC directory already exists. Skipping clone."
+if [ -d "./oran-sc-ric" ] && [ "$(ls -A ./oran-sc-ric)" ]; then
+    echo "OSC RIC directory already exists and is not empty. Skipping clone."
 else
-    # Clone the repository
-    echo "Building OSC RIC..."
+    # If the directory does not exist or is empty, proceed with cloning
+    if [ -d "./oran-sc-ric" ]; then
+        echo "OSC RIC directory exists but is empty. Proceeding with clone."
+        rm -rf ./oran-sc-ric  # Clean up the empty directory
+    fi
+    
+    echo "Cloning OSC RIC..."
     git clone https://github.com/srsran/oran-sc-ric
 fi
 

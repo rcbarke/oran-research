@@ -6,30 +6,27 @@
 # Clemson University IS-WiN Laboratory 
 # ORAN team
 # 
-# Description: Downloads and configures open5gs to the total amount of subscribers passed in
-# via CLI.
+# Description: Configures Open5GS subscriber database by reading from a subscriber_template_db.csv file.
+# The template has 4 entries: ue00 (reserved) and ue1-ue3, with ue1 used as the template for generating more UEs.
 #
-# Subscriber db is built within ./configs/subscriber_db.csv
+# Subscriber db is built within ./configs/subscriber_db.csv based on the number of UEs passed in via CLI.
 #
-# srsRANProject is cloned and built if not present or force built
-#
-# Subscriber db is staged to ./srsProject/docker/open5gs/subscriber.csv
-#
-# ./srsProject/docker/open5gs/open5gs.env is configured to point to the staged database
+# Usage: ./open5gs.sh <TOTAL_UEs> <START_INDEX>
 #
 
-# Function to build the subscriber database based on TOTAL_UEs
+# Function to build the subscriber database based on TOTAL_UEs and START_INDEX
 build_subscriber_db() {
     local TOTAL_UEs=$1
+    local START_INDEX=$2
 
-    echo "Building $CONFIG_FILE with $TOTAL_UEs UEs"
+    echo "Building $CONFIG_FILE with $TOTAL_UEs UEs starting from index $START_INDEX"
 
     # Get the directory where the script is located
     SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
-    # Define paths for the config file and temp file
+    # Define paths for the config file and template file
+    TEMPLATE_FILE="$SCRIPT_DIR/../configs/subscriber_template_db.csv"
     CONFIG_FILE="$SCRIPT_DIR/../configs/subscriber_db.csv"
-    TEMP_FILE="$SCRIPT_DIR/../configs/subscriber_db_temp.csv"
 
     # Ensure the configs directory exists
     CONFIG_DIR="$(dirname "$CONFIG_FILE")"
@@ -38,71 +35,59 @@ build_subscriber_db() {
         mkdir -p "$CONFIG_DIR"
     fi
 
-    # Create or clear the temp file
-    > "$TEMP_FILE"
+    # Create or clear the output file
+    > "$CONFIG_FILE"
 
-    # Check if the config file exists
-    if [ ! -f "$CONFIG_FILE" ]; then
-        echo "Error: Config file $CONFIG_FILE does not exist."
+    # Check if the template file exists
+    if [ ! -f "$TEMPLATE_FILE" ]; then
+        echo "Error: Template file $TEMPLATE_FILE does not exist."
         exit 1
     fi
 
-    # Copy the first 15 lines (comments) directly to the temp file
-    head -n 15 "$CONFIG_FILE" >> "$TEMP_FILE"
+    # Copy the comments and the ue0 (reserved) line to the config file
+    head -n 16 "$TEMPLATE_FILE" >> "$CONFIG_FILE"
 
-    # Row indices for specific UEs
-    UE0_LINE=16
-    UE1_LINE=17
-
-    # Extract and write ue0 (reserved)
-    sed -n "${UE0_LINE}p" $CONFIG_FILE >> $TEMP_FILE
-
-    # Extract ue1 as template
-    TEMPLATE_LINE=$(sed -n "${UE1_LINE}p" $CONFIG_FILE)
+    # Extract ue1 as the template
+    TEMPLATE_LINE=$(sed -n "17p" "$TEMPLATE_FILE")
 
     # Extract relevant fields from the template (using cut for easier column parsing)
-    TEMPLATE_UE_ID=$(echo $TEMPLATE_LINE | cut -d ',' -f1)
-    TEMPLATE_IMSI=$(echo $TEMPLATE_LINE | cut -d ',' -f2)
-    TEMPLATE_KEY=$(echo $TEMPLATE_LINE | cut -d ',' -f3)
-    TEMPLATE_IP=$(echo $TEMPLATE_LINE | cut -d ',' -f8)
-    TEMPLATE_PORT=$(echo $TEMPLATE_LINE | cut -d ',' -f6)
+    TEMPLATE_IMSI=$(echo "$TEMPLATE_LINE" | cut -d ',' -f2)
+    TEMPLATE_KEY=$(echo "$TEMPLATE_LINE" | cut -d ',' -f3)
+    TEMPLATE_OPC=$(echo "$TEMPLATE_LINE" | cut -d ',' -f4)
+    TEMPLATE_AUTH=$(echo "$TEMPLATE_LINE" | cut -d ',' -f5)
+    TEMPLATE_PORT=$(echo "$TEMPLATE_LINE" | cut -d ',' -f6)
+    TEMPLATE_AMBR=$(echo "$TEMPLATE_LINE" | cut -d ',' -f7)
+    TEMPLATE_IP=$(echo "$TEMPLATE_LINE" | cut -d ',' -f8)
 
-    # Common fields
-    TEMPLATE_OPC=$(echo $TEMPLATE_LINE | cut -d ',' -f4)
-    TEMPLATE_AUTH=$(echo $TEMPLATE_LINE | cut -d ',' -f5)
-    TEMPLATE_AMBR=$(echo $TEMPLATE_LINE | cut -d ',' -f7)  # AMBR remains common across UEs
+    # Write ue1 if the start index is less than or equal to 1 and within range
+    if (( START_INDEX == 1 )); then
+        echo "$TEMPLATE_LINE" >> "$CONFIG_FILE"
+    fi
 
-    # Write ue1 as is
-    echo $TEMPLATE_LINE >> $TEMP_FILE
+    # Generate additional UEs starting from the START_INDEX
+    for (( i=START_INDEX; i<START_INDEX+TOTAL_UEs; i++ )); do
+        UE_INDEX=$i
 
-    # Increment and write additional UEs from ue2 to ue(TOTAL_UEs)
-    for (( i=2; i<=$TOTAL_UEs; i++ )); do
-        # Increment the ueX field (e.g., ue01 -> ue02)
-        NEW_UE_ID="ue$(printf "%02d" $i)"
+        # Increment the ueX field (e.g., ue10, ue11, etc.)
+        NEW_UE_ID="ue$(printf "%02d" $UE_INDEX)"
 
-        # Increment IMSI by 1 for each UE, ensuring 15 digits are preserved
-        NEW_IMSI=$(printf "%015d" $((10#$TEMPLATE_IMSI + i - 1)))
+        # Increment IMSI by the UE_INDEX value, ensuring 15 digits are preserved
+        NEW_IMSI=$(printf "%015d" $((10#$TEMPLATE_IMSI + UE_INDEX - 1)))
 
-        # Increment Key by 1 for each UE (preserving the format and total length)
-        NEW_KEY=$(printf "%032s" "00112233445566778899aabb$(printf "%08x" $((0x${TEMPLATE_KEY:24} + i - 1)))")
-        
-        # Port remains 9001 for all UEs beyond ue00
-        NEW_PORT="9001"
+        # Increment Key by the UE_INDEX value (preserving the format and total length)
+        NEW_KEY=$(printf "%032s" "00112233445566778899aabb$(printf "%08x" $((0x${TEMPLATE_KEY:24} + UE_INDEX - 1)))")
 
-        # Increment IP address, ensuring that each part is correctly incremented
-        NEW_IP=$(echo $TEMPLATE_IP | awk -F '.' '{print $1"."$2"."$3"."($4+'$i'-1)}')
+        # Increment IP address for each UE
+        NEW_IP=$(echo "$TEMPLATE_IP" | awk -F '.' '{print $1"."$2"."$3"."($4+'$UE_INDEX'-1)}')
 
         # Replace the unique fields in the template line with incremented values
-        NEW_UE_LINE="$NEW_UE_ID,$NEW_IMSI,$NEW_KEY,$TEMPLATE_OPC,$TEMPLATE_AUTH,$NEW_PORT,$TEMPLATE_AMBR,$NEW_IP"
+        NEW_UE_LINE="$NEW_UE_ID,$NEW_IMSI,$NEW_KEY,$TEMPLATE_OPC,$TEMPLATE_AUTH,$TEMPLATE_PORT,$TEMPLATE_AMBR,$NEW_IP"
 
-        # Write the new UE line to the temporary file
-        echo $NEW_UE_LINE >> $TEMP_FILE
+        # Write the new UE line to the config file
+        echo "$NEW_UE_LINE" >> "$CONFIG_FILE"
     done
 
-    # Overwrite the original file with the updated content
-    mv $TEMP_FILE $CONFIG_FILE
-
-    echo "Successfully built $CONFIG_FILE with $TOTAL_UEs."
+    echo "Successfully built $CONFIG_FILE with $TOTAL_UEs UEs starting from index $START_INDEX."
 }
 
 # Function to configure the subscriber database with the built file
@@ -140,14 +125,15 @@ set_env_file() {
     echo "Successfully updated $ENV_FILE."
 }
 
-# Check for TOTAL_UEs argument
-if [[ $# -ne 1 ]]; then
-    echo "Usage: $0 <TOTAL_UEs>"
+# Check for TOTAL_UEs and START_INDEX arguments
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $0 <TOTAL_UEs> <START_INDEX>"
     exit 1
 fi
 
 # Build subscriber database
-build_subscriber_db $1
+build_subscriber_db "$1" "$2"
 
 # Configure subscriber database
 config_subscriber_db
+
