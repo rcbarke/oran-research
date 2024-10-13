@@ -368,16 +368,16 @@ build_component() {
 
     case "$component" in
         "srs_project")
-            SRSBUILD="./srsRAN_Project/build"
-            if [[ $BUILD_SRSP == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
+            SRSPBUILD="./srsRAN_Project/build"
+            if [[ $BUILD_SRSP == "T" || ! -d "$SRSPBUILD" || -z "$(ls -A "$SRSPBUILD" 2>/dev/null)" ]]; then
                 # Force build, build folder does not exist, or build folder is empty
                 echo "Building component for srsRAN Project: 5G Protocol stack..."
                 ./compile/srs_project.sh
             fi
             ;;
         "srs4G")
-            SRS4GBUILD="./srsRAN_Project/build"
-            if [[ $BUILD_SRS4G == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
+            SRS4GBUILD="./srsRAN_4G/build"
+            if [[ $BUILD_SRS4G == "T" || ! -d "$SRS4GBUILD" || -z "$(ls -A "$SRS4GBUILD" 2>/dev/null)" ]]; then
                 # Force build, build folder does not exist, or build folder is empty
                 echo "Building component for srsRAN 4G: Obtain srsue..."
                 ./compile/srs4G.sh
