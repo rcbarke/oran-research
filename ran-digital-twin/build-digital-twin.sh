@@ -36,13 +36,25 @@
 # Mode
 MODE="core" # Setup core RAN by default
 BUILD_SRSP="T" # Build srsProject by default
+BUILD_SRS4G="T" # Build srs4G by default
+
+# Get the default gateway dynamically from the machine's current route configuration
+DEFAULT_GATEWAY=$(ip route | grep default | awk '{print $3}')
+
+# If no gateway is found, fall back to a default value or exit with an error
+if [[ -z "$DEFAULT_GATEWAY" ]]; then
+    echo "Error: Could not determine the default gateway. Please check your network configuration."
+    exit 1
+fi
+
+# Display the dynamically detected gateway
+echo "Detected default gateway: $DEFAULT_GATEWAY"
 
 # Host IP configuration
 CORE_RAN_IP="10.0.2.15"
 UE_NODE_IP="10.0.2.100"
 HOST_IP=${CORE_RAN_IP} # Setup core RAN by default
 DEFAULT_NETMASK="255.255.255.0"
-DEFAULT_GATEWAY="10.0.2.1"
 DEFAULT_DNS="8.8.8.8"
 INTERFACE=""  # Default empty, will be set if provided by -int flag
 
@@ -60,7 +72,7 @@ LOCAL_UES=""     # Number of UEs on this machine, will be set after parsing flag
 UE_START_IDX=1    # Starting index of UEs on this machine. One based indexing.
 
 # Define valid flags
-VALID_FLAGS=("-debug" "-mode" "-hostip" "-int" "-srsP" "-ue" "-ue_local" "-ue_idx")
+VALID_FLAGS=("-debug" "-mode" "-hostip" "-int" "-srsP" "-srs4G" "-ue" "-ue_local" "-ue_idx")
 DEBUG_MODE=false
 
 # Function to display usage information
@@ -72,6 +84,7 @@ usage() {
     echo "  -hostip <ip_address>  Specify the static IP for the host machine."
     echo "  -int <iface> Specify the network interface to configure static IP."
     echo "  -srsP [T|F] Specify whether or not to build srsRAN Project from source."
+    echo "  -srs4G [T|F] Specify whether or not to build srsRAN 4G from source."
     echo "  -ue Specify the total amount of UEs to build across the network. Default 3."
     echo "  -ue_local Specify the amount of UEs to build on this machine. Must be <= total UEs. Default total UEs."
     echo "  -ue_idx Specify the starting index of the UEs on this machine. Cannot overlap with remote server if multiple machines are used. Default 1. Cannot specify 0."
@@ -142,6 +155,15 @@ validate_cli() {
                     shift 2
                 else
                     echo "Error: -srsP flag requires 'T' (true) or 'F' (false)."
+                    usage
+                fi
+                ;;
+            -srs4G)
+                if [[ "$2" == "T" || "$2" == "F" ]]; then
+                    BUILD_SRS4G="$2"
+                    shift 2
+                else
+                    echo "Error: -srs4G flag requires 'T' (true) or 'F' (false)."
                     usage
                 fi
                 ;;
@@ -284,6 +306,10 @@ sudo apt-get update
             sudo apt-get install libzmq3-dev
             sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
             ;;
+        "srs4G")   
+            echo "Building dependencies for srsRAN 4G: Obtain srsUE..."
+            sudo apt-get install build-essential cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
+            ;;
         "osc-ric")
             echo "Building dependencies for OSC RIC..."
             ;;
@@ -333,10 +359,18 @@ build_component() {
     case "$component" in
         "srs_project")
             SRSBUILD="./srsRAN_Project/build"
-            if [[ $SRSBUILD == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
+            if [[ $BUILD_SRSP == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
                 # Force build, build folder does not exist, or build folder is empty
                 echo "Building component for srsRAN Project: 5G Protocol stack..."
                 ./compile/srs_project.sh
+            fi
+            ;;
+        "srs4G")
+            SRS4GBUILD="./srsRAN_Project/build"
+            if [[ $BUILD_SRS4G == "T" || ! -d "$SRSBUILD" || -z "$(ls -A "$SRSBUILD" 2>/dev/null)" ]]; then
+                # Force build, build folder does not exist, or build folder is empty
+                echo "Building component for srsRAN 4G: Obtain srsue..."
+                ./compile/srs4G.sh
             fi
             ;;
         "open5gs")
@@ -445,6 +479,14 @@ if [ "$MODE" = "core" ]; then
 
    # srs_project
    app="srs_project" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
+   build_component "${app}"  
+   echo ""
+
+   # srs4G
+   app="srs4G" 
    echo "----- ${app} -----"
    build_dependencies "${app}"
    echo ""

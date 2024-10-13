@@ -45,11 +45,17 @@ get_usim() {
     IMEI_BASE=$(grep "imei = " "$BASE_CONFIG" | cut -d '=' -f2 | tr -d '[:space:]')
     IMEI=$(printf "%015d" $((IMEI_BASE + UE_INDEX)))
 
-    # Update the [usim] section in the configuration file
-    sed -i "/^\[usim\]/,/^\[.*\]/s|imsi = .*|imsi = $IMSI|g" "$UE_CONFIG"
-    sed -i "/^\[usim\]/,/^\[.*\]/s|k = .*|k = $K|g" "$UE_CONFIG"
-    sed -i "/^\[usim\]/,/^\[.*\]/s|opc  = .*|opc  = $OPC|g" "$UE_CONFIG"
-    sed -i "/^\[usim\]/,/^\[.*\]/s|imei = .*|imei = $IMEI|g" "$UE_CONFIG"
+    # Escape any special characters in the values
+    IMSI_ESCAPED=$(echo "$IMSI" | sed 's/[&/\]/\\&/g')
+    K_ESCAPED=$(echo "$K" | sed 's/[&/\]/\\&/g')
+    OPC_ESCAPED=$(echo "$OPC" | sed 's/[&/\]/\\&/g')
+    IMEI_ESCAPED=$(echo "$IMEI" | sed 's/[&/\]/\\&/g')
+
+    # Update the [usim] section in the configuration file using the escaped values
+    sed -i "\|\[usim\]|,\|\[.*\]|s|imsi = .*|imsi = $IMSI_ESCAPED|g" "$UE_CONFIG"
+    sed -i "\|\[usim\]|,\|\[.*\]|s|k = .*|k = $K_ESCAPED|g" "$UE_CONFIG"
+    sed -i "\|\[usim\]|,\|\[.*\]|s|opc  = .*|opc  = $OPC_ESCAPED|g" "$UE_CONFIG"
+    sed -i "\|\[usim\]|,\|\[.*\]|s|imei = .*|imei = $IMEI_ESCAPED|g" "$UE_CONFIG"
 
     echo "Updated USIM for UE${UE_INDEX} in ${UE_CONFIG}"
 }
@@ -71,7 +77,8 @@ generate_ues() {
     # Remove all existing uex configuration files before generating new ones
     echo "Removing existing UE configuration files..."
     rm -f ./configs/ue[0-9]*_zmq.conf
-
+    rm -f ./srsRAN_4G/build/srsue/src/ue[0-9]*_zmq.conf
+    
     # Loop through and generate config files for each UE
     for (( i=0; i<$NUM_UES; i++ )); do
         UE_INDEX=$((START_INDEX + i))  # Calculate the current UE index (one-based index)
@@ -101,8 +108,10 @@ generate_ues() {
 
         # Call get_usim function to update the USIM values for this UE
         get_usim "$UE_INDEX" "$UE_CONFIG"
-
         echo "Generated configuration for UE${UE_INDEX}: ${UE_CONFIG}"
+        
+        echo "Staging srsue configs into ./srsRAN_4G/build/srsue/src/..."
+        cp "$UE_CONFIG" "./srsRAN_4G/build/srsue/src/"
     done
 
     echo "Successfully generated $NUM_UES UE configuration files starting from index $START_INDEX."
@@ -116,6 +125,3 @@ fi
 
 # Call the function to generate UEs
 generate_ues "$1" "$2"
-
-#echo "Staging srsue configs into ./srs4G_Project/build/apps/gnb/..."
-#cp $CONFIG_FILE "./srsRAN_Project/build/apps/gnb/gnb_zmq.yaml"
