@@ -138,6 +138,11 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 - Integration with additional xApps for enhanced performance monitoring.
 - Expand signal modulation and RF waveform processing using GNU Radio.
 
+## References
+
+The srsProject Documentation was leveraged as a starting point for this repository, which is an orchestration framework for combining several packages and automating their configuration:  
+[srsProject Documentation](https://docs.srsran.com/projects/project/en/latest/tutorials/source/near-rt-ric/source/index.html)
+
 ## Contact
 
 For further assistance, feel free to contact the **Clemson University IS-WiN Laboratory ORAN team** led by Tolunay Sefyi, Ryan Barker, and Basir Reze.
