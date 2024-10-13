@@ -50,12 +50,12 @@ The primary script for building the entire RAN Digital Twin environment. This sc
 ### Options:
 
 - `-mode [core|edge]`: Specify the mode of the RAN network (default: core).
-- `-hostip <ip_address>`: Override the default static IP for the host machine.
-- `-int <interface>`: Specify the network interface to configure the static IP.
-- `-srsP [T|F]`: Enable/Disable building the srsRAN Project.
-- `-srs4G [T|F]`: Enable/Disable building the srs4G UEs.
+- `-hostip <ip_address>`: Override the default static IP for the host machine (default: disabled).
+- `-int <interface>`: Specify the network interface to configure the static IP (default: 10.0.2.15).
+- `-srsP [T|F]`: Enable/Disable building the srsRAN Project package (default T).
+- `-srs4G [T|F]`: Enable/Disable building the srs4G package (default: T).
 - `-ue <num>`: Specify the total number of UEs to build (default: 3).
-- `-ue_local <num>`: Specify the number of UEs to build on this machine.
+- `-ue_local <num>`: Specify the number of UEs to build on this machine (default: matches -ue).
 - `-ue_idx <index>`: Specify the starting index of UEs for this machine (default: 1).
 
 ---
