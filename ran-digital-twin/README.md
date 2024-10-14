@@ -41,7 +41,7 @@ The build scripts will automatically install and configure all necessary depende
 ├── oran-sc-ric/                        # Source files and builds for OSC RIC (added after build)
 ├── srsRAN_4G/                          # Source files and builds for srsRAN 4G UE (added after build)
 ├── srsRAN_Project/                     # Source files and builds for srsRAN project (added after build)
-├── build-digital-twin.sh               # Main script to build and deploy the digital twin
+├── build-digital-twin.sh               # Main script to build and stage the digital twin
 ├── deploy-digital-twin.sh              # Script to deploy the digital twin
 ├── destroy-digital-twin.sh             # Script to destroy and clean up the digital twin
 └── README.md                           # Documentation for the project
