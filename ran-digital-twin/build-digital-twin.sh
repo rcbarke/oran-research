@@ -43,6 +43,9 @@
 # 7. ue_local: Specify the number of UEs to build on this machine. Default = total UEs.
 # 8. ue_idx: Specify the starting index for UEs on this machine. Default = 1.
 
+# Pre-authentication
+sudo -v
+
 # Mode
 MODE="core" # Setup core RAN by default
 BUILD_SRSP="T" # Build srsProject by default
@@ -297,10 +300,10 @@ build_dependencies() {
     case "$component" in
         "os") 
             echo "Building dependencies for OS..."
-            sudo apt-get install vim-gtk meld net-tools xterm dbus-x11 iperf iperf3 curl
+            sudo apt-get install -y vim-gtk meld net-tools xterm dbus-x11 iperf iperf3 curl
             for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
             sudo apt-get update
-            sudo apt-get install ca-certificates curl
+            sudo apt-get install -y ca-certificates curl
             sudo install -m 0755 -d /etc/apt/keyrings
             sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
             sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -309,32 +312,32 @@ build_dependencies() {
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
 sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
-            sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
         "srs_project")   
             echo "Building dependencies for srsRAN Project: 5G Protocol stack..."
-            sudo apt-get install libzmq3-dev
-            sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
+            sudo apt-get install -y libzmq3-dev
+            sudo apt-get install -y cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
             ;;
         "srs4G")   
             echo "Building dependencies for srsRAN 4G: Obtain srsUE..."
-            sudo apt-get install build-essential cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
+            sudo apt-get install -y build-essential cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
             ;;
         "osc-ric")
             echo "Building dependencies for OSC RIC..."
             ;;
         "open5gs")   
             echo "Building dependencies for Open5GS 5GC Core: MME/AMF/SGW/PGW..."
-            sudo apt-get install libzmq3-dev
-            sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
+            sudo apt-get install -y libzmq3-dev
+            sudo apt-get install -y cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
             ;;
         "osc-ric")
             echo "Building dependencies for OSC RIC..."
             ;;
         "srsgnb")
             echo "Building dependencies for srsProject srsgNB: Disaggregated CU/DU gNB..."
-            sudo apt-get install libzmq3-dev
-            sudo apt-get install cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
+            sudo apt-get install -y libzmq3-dev
+            sudo apt-get install -y cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
             ;;
         "srsue")
             echo "Building dependencies for srs4G srsUE..."
@@ -342,7 +345,7 @@ sudo apt-get update
             ;;
         "gnuradio")
             echo "Building dependencies for GNU Radio: Modulated RF waveform for all UEs..."
-            sudo apt-get install xterm #defensive programming
+            sudo apt-get install -y xterm #defensive programming
             ;;
         "kpimon")
             echo "Building dependencies for KPIMon xApp: Performance metric monitoring at core..."
@@ -424,7 +427,6 @@ build_component() {
 echo "---------------------------------------------------------------------"
 echo "--------------------- build-digital-twin.sh -------------------------"
 echo "---------------------------------------------------------------------"
-echo ""
 
 # Parse command-line arguments
 validate_cli "$@"  # Pass all arguments to the validate_cli function
@@ -453,7 +455,7 @@ fi
 # Validate host OS
 echo ""
 echo ""
-echo "----------------- Checking host OS and installing initial dependencies... -----------------"
+echo "----------------- Dependencies check... -----------------"
 echo ""
 echo ""
 validate_os
@@ -461,7 +463,7 @@ build_dependencies "os"
 
 echo ""
 echo ""
-echo "----------------- Host ${MODE^^} machine IP configuration: $HOST_IP... -----------------"
+echo "----------------- ${MODE^^} IP configuration: $HOST_IP... -----------------"
 echo ""
 echo ""
 
@@ -539,22 +541,18 @@ if [ "$MODE" = "core" ]; then
    build_dependencies "${app}"
    echo ""
    build_component "${app}"  
-   echo ""
-
-   # Add deploy script prompt here...
 else
    # Edge RAN
    echo "Edge RAN: Currently unsupported..."
 fi
 
+echo "----------------- Wrapping Up... -----------------"
 echo ""
+echo "See build-digital-twin.sh --help for advanced build options"
 echo ""
-echo "----------------- Build of ${MODE^^} RAN Digital Twin Complete -----------------"
+echo "Else, next step is to run ./deploy-digital-twin.sh ${LOCAL_UES}"
 echo ""
-echo ""
-
-# Method to launch terminal tabs for deploy script...
-# gnome-terminal --tab --title="Open5GS Build" -- bash -c "echo 'Building #Open5GS...'; ./build/open5gs.sh; exec bash"
+echo "----------------- ${MODE^^} RAN Digital Twin Build Complete -----------------"
 
 # Known Bugs:
 # - None

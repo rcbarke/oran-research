@@ -41,7 +41,9 @@ The build scripts will automatically install and configure all necessary depende
 ├── oran-sc-ric/                        # Source files and builds for OSC RIC (added after build)
 ├── srsRAN_4G/                          # Source files and builds for srsRAN 4G UE (added after build)
 ├── srsRAN_Project/                     # Source files and builds for srsRAN project (added after build)
-├── build-digital-twin.sh               # Main script to build and deploy the RAN Digital Twin
+├── build-digital-twin.sh               # Main script to build and deploy the digital twin
+├── deploy-digital-twin.sh              # Script to deploy the digital twin
+├── destroy-digital-twin.sh             # Script to destroy and clean up the digital twin
 └── README.md                           # Documentation for the project
 ```
 
@@ -65,6 +67,42 @@ The primary script for building the entire RAN Digital Twin environment. This sc
 - `-ue <num>`: Specify the total number of UEs to build (default: 3).
 - `-ue_local <num>`: Specify the number of UEs to build on this machine (default: matches -ue).
 - `-ue_idx <index>`: Specify the starting index of UEs for this machine (default: 1).
+
+---
+
+### `deploy-digital-twin.sh`
+The deployment script for the RAN Digital Twin simulation. This script launches Open5GS, OSC RIC, srsGNB, and multiple UEs, with RF signal modulation managed through GNU Radio.
+
+#### Usage
+
+```bash
+./deploy-digital-twin.sh [-b] <NUM_UES>
+```
+- `-b`: Runs the `build-digital-twin.sh` script before deploying the environment.
+- `-NUM_UES`: Specify the number of UEs to deploy (required, must be a whole number).
+
+#### Example
+
+```bash
+./deploy-digital-twin.sh -b 3
+```
+#### Notes:
+
+- Make sure to run the deploy script from the project root directory.
+- Use `gnome-terminal` to ensure correct tab handling for different processes.
+
+---
+
+### `destroy-digital-twin.sh`
+This script removes all resources created by the build and deploy scripts, including Docker containers, network namespaces, and project directories.
+- **Confirmation Required**: The script will prompt you for confirmation before performing the cleanup as the operation is destructive.
+
+#### Cleaned Components:
+
+1. **Docker Containers**: Removes all containers created by Open5GS, OSC RIC, and other components.
+2. **Docker Networks**: Cleans up non-default Docker networks created during deployment.
+3. **Network Namespaces**: Deletes UE namespaces (namespaces starting with ue).
+4. **Project Directories**: Removes srsRAN_Project, srsRAN_4G, and oran-sc-ric directories.
 
 ---
 
@@ -164,10 +202,7 @@ The **`srsue.sh`**: script will create individual configuration files for each U
 
 ## Future Enhancements
 
-- Add `deploy-digital-twin.sh` to build the network stack in sequence across multiple VM terminals
-- Enhance `build-digital-twin.sh` to prompt for a `deploy-digital-twin.sh` call, passing in all built UEs 
 - Expand signal modulation and RF waveform processing using GNU Radio to automatically synchronize with  `build-digital-twin.sh` 
-- Add `destruct-digital-twin.sh` to undeploy the network stack and destroy all configuration, including all docker bridged network adapters
 - Add support for edge RAN deployments: Hosting UEs from a separate VM for processing offload
 - Integration with additional xApps for enhanced performance monitoring and network optimization
 

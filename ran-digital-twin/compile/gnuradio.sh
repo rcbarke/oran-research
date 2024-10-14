@@ -10,7 +10,7 @@
 #
 
 # Install gnuradio
-sudo apt-get install gnuradio
+sudo apt-get install -y gnuradio
 
 GNURADIO_CONFIG="./configs/multi_ue_scenario.grc"
 echo "Staging gnuradio .grc into ./srsRAN_4G/build/srsue/src/..."
