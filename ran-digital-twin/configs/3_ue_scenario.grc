@@ -32,6 +32,8 @@ options:
     rotation: 0
     state: enabled
 blocks:
+#### HEADER BLOCKS
+### Static
 - name: samp_rate
   id: variable
   parameters:
@@ -68,8 +70,10 @@ blocks:
     coordinate: [304, 12.0]
     rotation: 0
     state: enabled
-
+    
+  
 #### FLOW GRAPH 1: gnb_tx -> ue_rx
+### gnb_tx blocks
 - name: zeromq_gnb_tx
   id: zeromq_req_source
   parameters:
@@ -110,7 +114,7 @@ blocks:
     coordinate: [392, 172.0]
     rotation: 0
     state: true
-### UE 1 Rx Pathloss and Sink Blocks
+### ue_rx pathloss blocks (dynamically generated based on total UEs)
 - name: blocks_ue1_rx_pathloss
   id: blocks_multiply_const_vxx
   parameters:
@@ -129,7 +133,43 @@ blocks:
     coordinate: [664, 76.0]
     rotation: 0
     state: true
-
+- name: blocks_ue2_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue2_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 172.0]
+    rotation: 0
+    state: true
+- name: blocks_ue3_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue3_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 268.0]
+    rotation: 0
+    state: true
+### ue_rx sink blocks (dynamically generated based on total UEs)
 - name: zeromq_ue1_rx
   id: zeromq_rep_sink
   parameters:
@@ -149,26 +189,6 @@ blocks:
     coordinate: [856, 60.0]
     rotation: 0
     state: true
-### UE 2 Rx Pathloss and Sink Blocks
-- name: blocks_ue2_rx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue2_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [664, 172.0]
-    rotation: 0
-    state: true
-
 - name: zeromq_ue2_rx
   id: zeromq_rep_sink
   parameters:
@@ -187,27 +207,7 @@ blocks:
     bus_structure: null
     coordinate: [856, 156.0]
     rotation: 0
-    state: true
-### UE 3 Rx Pathloss and Sink Blocks
-- name: blocks_ue3_rx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue3_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [664, 268.0]
-    rotation: 0
-    state: true
-
+    state: true    
 - name: zeromq_ue3_rx
   id: zeromq_rep_sink
   parameters:
@@ -217,7 +217,7 @@ blocks:
     comment: ''
     hwm: zmq_hwm
     pass_tags: 'False'
-    timeout: zmq_timeout
+    timeout: '100'
     type: complex
     vlen: '1'
   states:
@@ -227,86 +227,9 @@ blocks:
     coordinate: [856, 252.0]
     rotation: 0
     state: true
-### UE 4 Rx Pathloss and Sink Blocks
-- name: blocks_ue4_rx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue4_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [664, 364.0]
-    rotation: 0
-    state: true
-
-- name: zeromq_ue4_rx
-  id: zeromq_rep_sink
-  parameters:
-    address: tcp://127.0.0.1:2400
-    affinity: ''
-    alias: ''
-    comment: ''
-    hwm: zmq_hwm
-    pass_tags: 'False'
-    timeout: zmq_timeout
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [856, 348.0]
-    rotation: 0
-    state: true
-### UE 5 Rx Pathloss and Sink Blocks
-- name: blocks_ue5_rx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue5_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [664, 460.0]
-    rotation: 0
-    state: true
-
-- name: zeromq_ue5_rx
-  id: zeromq_rep_sink
-  parameters:
-    address: tcp://127.0.0.1:2500
-    affinity: ''
-    alias: ''
-    comment: ''
-    hwm: zmq_hwm
-    pass_tags: 'False'
-    timeout: zmq_timeout
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [856, 444.0]
-    rotation: 0
-    state: true
+    
 #### FLOW GRAPH 2: ue_tx -> gnb_rx
-### UE 1 Tx Pathloss and Source Blocks
+### ue_tx source blocks (dynamically generated based on total UEs)      
 - name: zeromq_ue1_tx
   id: zeromq_req_source
   parameters:
@@ -328,26 +251,6 @@ blocks:
     coordinate: [128, 332.0]
     rotation: 0
     state: true
-
-- name: blocks_ue1_tx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue1_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [384, 348.0]
-    rotation: 0
-    state: true
-### UE 2 Tx Pathloss and Source Blocks
 - name: zeromq_ue2_tx
   id: zeromq_req_source
   parameters:
@@ -369,26 +272,6 @@ blocks:
     coordinate: [128, 420.0]
     rotation: 0
     state: true
-
-- name: blocks_ue2_tx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue2_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [384, 436.0]
-    rotation: 0
-    state: true
-### UE 3 Tx Pathloss and Source Blocks
 - name: zeromq_ue3_tx
   id: zeromq_req_source
   parameters:
@@ -409,8 +292,44 @@ blocks:
     bus_structure: null
     coordinate: [128, 508.0]
     rotation: 0
+    state: true 
+### ue_tx pathloss blocks (dynamically generated based on total UEs)      
+- name: blocks_ue1_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue1_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 348.0]
+    rotation: 0
     state: true
-
+- name: blocks_ue2_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue2_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 436.0]
+    rotation: 0
+    state: true
 - name: blocks_ue3_tx_pathloss
   id: blocks_multiply_const_vxx
   parameters:
@@ -429,89 +348,7 @@ blocks:
     coordinate: [384, 524.0]
     rotation: 0
     state: true
-### UE 4 Tx Pathloss and Source Blocks
-- name: zeromq_ue4_tx
-  id: zeromq_req_source
-  parameters:
-    address: tcp://127.0.0.1:2401
-    affinity: ''
-    alias: ''
-    comment: ''
-    hwm: zmq_hwm
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    pass_tags: 'False'
-    timeout: zmq_timeout
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [128, 596.0]
-    rotation: 0
-    state: true
-
-- name: blocks_ue4_tx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue4_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [384, 612.0]
-    rotation: 0
-    state: true
-### UE 5 Tx Pathloss and Source Blocks
-- name: zeromq_ue5_tx
-  id: zeromq_req_source
-  parameters:
-    address: tcp://127.0.0.1:2501
-    affinity: ''
-    alias: ''
-    comment: ''
-    hwm: zmq_hwm
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    pass_tags: 'False'
-    timeout: zmq_timeout
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [128, 684.0]
-    rotation: 0
-    state: true
-
-- name: blocks_ue5_tx_pathloss
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: 10**(-1.0*ue5_path_loss_db/20.0)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [384, 700.0]
-    rotation: 0
-    state: true
-### gNB Rx Combine and Sink Block
+### gnb_rx blocks
 - name: blocks_ue_tx_to_gnb_rx_add
   id: blocks_add_xx
   parameters:
@@ -520,7 +357,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_inputs: '5'
+    num_inputs: '3'
     type: complex
     vlen: '1'
   states:
@@ -530,7 +367,6 @@ blocks:
     coordinate: [648, 408.0]
     rotation: 0
     state: true
-
 - name: zeromq_gnb_rx
   id: zeromq_rep_sink
   parameters:
@@ -550,6 +386,8 @@ blocks:
     coordinate: [856, 420.0]
     rotation: 0
     state: true
+
+
 #### QT GUI Blocks
 ### Static
 - name: slow_down_ratio
@@ -570,10 +408,10 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1064, 468]
+    coordinate: [1064, 468.0]
     rotation: 0
     state: true
-### UE 1 Pathloss Control
+### Dynamic (generated based on total UEs)
 - name: ue1_path_loss_db
   id: variable_qtgui_range
   parameters:
@@ -585,8 +423,8 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '107.76'
-    value: '21.55200000000000000000'
+    stop: '100'
+    value: '0'
     widget: counter_slider
   states:
     bus_sink: false
@@ -595,7 +433,6 @@ blocks:
     coordinate: [1088, 20.0]
     rotation: 0
     state: true
-### UE 2 Pathloss Control
 - name: ue2_path_loss_db
   id: variable_qtgui_range
   parameters:
@@ -607,17 +444,16 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '107.76'
-    value: '43.10400000000000000000'
+    stop: '100'
+    value: '10'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 170.0]
+    coordinate: [1088, 172.0]
     rotation: 0
     state: true
-### UE 3 Pathloss Control
 - name: ue3_path_loss_db
   id: variable_qtgui_range
   parameters:
@@ -629,88 +465,34 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '107.76'
-    value: '64.65600000000000000000'
+    stop: '100'
+    value: '20'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 320.0]
+    coordinate: [1088, 324.0]
     rotation: 0
     state: true
-### UE 4 Pathloss Control
-- name: ue4_path_loss_db
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: UE4 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '107.76'
-    value: '86.20800000000000000000'
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1088, 470.0]
-    rotation: 0
-    state: true
-### UE 5 Pathloss Control
-- name: ue5_path_loss_db
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: UE5 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '107.76'
-    value: '107.76000000000000000000'
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1088, 620.0]
-    rotation: 0
-    state: true
+
 connections:
 #### Flow Graph 1 Connections: gnb_tx to ue_rx
 - [zeromq_gnb_tx, '0', blocks_throttle_gnb_tx_to_ue_rx, '0']
 - [blocks_throttle_gnb_tx_to_ue_rx, '0', blocks_ue1_rx_pathloss, '0']
-- [blocks_ue1_rx_pathloss, '0', zeromq_ue1_rx, '0']
-- [zeromq_gnb_tx, '0', blocks_throttle_gnb_tx_to_ue_rx, '0']
 - [blocks_throttle_gnb_tx_to_ue_rx, '0', blocks_ue2_rx_pathloss, '0']
-- [blocks_ue2_rx_pathloss, '0', zeromq_ue2_rx, '0']
-- [zeromq_gnb_tx, '0', blocks_throttle_gnb_tx_to_ue_rx, '0']
 - [blocks_throttle_gnb_tx_to_ue_rx, '0', blocks_ue3_rx_pathloss, '0']
+- [blocks_ue1_rx_pathloss, '0', zeromq_ue1_rx, '0']
+- [blocks_ue2_rx_pathloss, '0', zeromq_ue2_rx, '0']
 - [blocks_ue3_rx_pathloss, '0', zeromq_ue3_rx, '0']
-- [zeromq_gnb_tx, '0', blocks_throttle_gnb_tx_to_ue_rx, '0']
-- [blocks_throttle_gnb_tx_to_ue_rx, '0', blocks_ue4_rx_pathloss, '0']
-- [blocks_ue4_rx_pathloss, '0', zeromq_ue4_rx, '0']
-- [zeromq_gnb_tx, '0', blocks_throttle_gnb_tx_to_ue_rx, '0']
-- [blocks_throttle_gnb_tx_to_ue_rx, '0', blocks_ue5_rx_pathloss, '0']
-- [blocks_ue5_rx_pathloss, '0', zeromq_ue5_rx, '0']
+
 #### Flow Graph 2 Connections: ue_tx to gnb_rx
 - [zeromq_ue1_tx, '0', blocks_ue1_tx_pathloss, '0']
-- [blocks_ue1_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '0']
 - [zeromq_ue2_tx, '0', blocks_ue2_tx_pathloss, '0']
-- [blocks_ue2_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '1']
 - [zeromq_ue3_tx, '0', blocks_ue3_tx_pathloss, '0']
+- [blocks_ue1_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '0']
+- [blocks_ue2_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '1']
 - [blocks_ue3_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '2']
-- [zeromq_ue4_tx, '0', blocks_ue4_tx_pathloss, '0']
-- [blocks_ue4_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '3']
-- [zeromq_ue5_tx, '0', blocks_ue5_tx_pathloss, '0']
-- [blocks_ue5_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '4']
 - [blocks_ue_tx_to_gnb_rx_add, '0', zeromq_gnb_rx, '0']
 
 metadata:

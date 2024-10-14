@@ -400,7 +400,7 @@ build_component() {
             ;;
         "gnuradio")
             echo "Building component for GNU Radio: Modulated RF waveform for all UEs..."
-            ./compile/gnuradio.sh
+            ./compile/gnuradio.sh $TOTAL_UES
             ;;
         "kpimon")
             echo "Building component for KPIMon xApp: Performance metric monitoring at core..."
