@@ -43,9 +43,6 @@
 # 7. ue_local: Specify the number of UEs to build on this machine. Default = total UEs.
 # 8. ue_idx: Specify the starting index for UEs on this machine. Default = 1.
 
-# Pre-authentication
-sudo -v
-
 # Mode
 MODE="core" # Setup core RAN by default
 BUILD_SRSP="T" # Build srsProject by default
