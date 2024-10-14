@@ -30,7 +30,8 @@ The build scripts will automatically install and configure all necessary depende
 │   ├── srs_project.sh                  # Builds and installs srsRAN project
 │   ├── srsgnb.sh                       # Builds srsRAN gNB config: Currently supports single gNB @ Core
 |   ├── srsue.sh                        # Builds srsUE configs and synchronizes with Open5GS database
-|   └── gnuradio.sh                     # Builds gnuradio configs: Currently hardcodes 3 UEs but goal is to be synchonized with srsue
+|   ├── gnuradio.sh                     # Builds and configures gnuradio
+|   └── generate_multi_ue_grc.sh        # Builds dynamic gnuradio grc files
 ├── configs/                            # Configuration files for UEs and other components
 │   ├── subscriber_db.csv               # List of subscribers (IMSI, Keys, OP/OPC, etc.)
 │   ├── subscriber_template_db.csv      # List of subscribers (IMSI, Keys, OP/OPC, etc.)
