@@ -212,4 +212,4 @@ The [srsProject Documentation](https://docs.srsran.com/projects/project/en/lates
 
 ## Contact
 
-For further assistance, feel free to contact the **Clemson University IS-WiN Laboratory ORAN team** led by Tolunay Sefyi, Ryan Barker, and Basir Reze.
+For further assistance, feel free to contact the **Clemson University IS-WiN Laboratory ORAN team** led by Tolunay Sefyi, Ryan Barker, and Basir Ebrahimi.
