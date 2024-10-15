@@ -6,42 +6,46 @@
 # Clemson University IS-WiN Laboratory
 # ORAN team
 #
-# Description: Automated deployment script for the RAN Digital Twin simulation. 
-# This script initializes the software stack comprising Open5GS, OSC RIC, srsGNB, and srsUE components, with UE connections modulated via GNU Radio.
+# Description:
+# This script automates the deployment of a RAN (Radio Access Network) Digital Twin simulation. It initializes the software stack including Open5GS (5G core), OSC RIC (RAN Intelligent Controller), srsGNB (gNB CU/DU), and srsUE (UE instances), with RF signal modulation managed through GNU Radio.
 #
 # Architecture:
-# 1. Open5GS 5GC Core: MME/AMF/SGW/PGW (5G core)
-# 2. OSC RIC: Orchestration and control via a modified RAN Intelligent Controller
-# 3. srsGNB: Disaggregated CU/DU gNB connected to the OSC RIC and Open5GS
-# 4. srsUE: Multiple UE instances, each running in its own network namespace
+# 1. **Open5GS 5GC Core**: MME/AMF/SGW/PGW components to manage 5G core functionalities.
+# 2. **OSC RIC**: Orchestration and control of the RAN through a modified RAN Intelligent Controller.
+# 3. **srsGNB**: Disaggregated CU/DU gNB connected to both OSC RIC and Open5GS core.
+# 4. **srsUE**: Multiple UE instances configured and managed in their own network namespaces.
 #
 # Signal Modulation:
-# - GNU Radio: Handles RF waveform modulation for all UEs
+# - **GNU Radio**: Modulates RF waveforms for all UEs.
+#
+# Provided xApps:
+# 1. **KPIMon**: Core performance metric monitoring via terminal CLI.
+# 2. **Grafana**: gNB performance metric monitoring via a web browser (Grafana dashboard).
 #
 # Script Flow:
-# - Takes the number of UEs as a CLI argument.
-# - Launches Open5GS 5GC, OSC RIC, srsGNB, and deploys each UE in a separate terminal tab.
-# - Prompts the user at critical steps to ensure each component is properly initialized before proceeding.
-# - Handles synchronization between Open5GS, OSC RIC, srsGNB, and UEs.
-# - Guides the user to launch GNU Radio for RF signal modulation and UE attachment.
+# - Parses CLI arguments for deployment options (e.g., number of UEs, build options, xApp handling).
+# - Automates the deployment of Open5GS core, OSC RIC, srsGNB, and UE instances in separate gnome-terminal tabs.
+# - Optionally builds the environment before deployment and launches performance monitoring xApps (KPIMon and Grafana).
+# - Guides the user through critical steps such as starting each component and ensuring proper connections.
 #
 # Pre-Conditions and Assumptions:
-# 1. The user must have Docker, GNU Radio, and srsRAN installed and configured.
-# 2. The user is running this script on a machine with static IP assignment and sufficient resources for virtualization.
-# 3. The private IP subnets indicated by the simulation are reserved for Docker applications. Any conflict will cause the deployment to fail.
+# 1. ./build-digital-twin.sh has been run successfully to deploy the environment.
+# 2. The number of UEs is consistent with the amount currently built.
 #
 # Optional CLI Arguments:
-# 1. -b: Runs the build script (build-digital-twin.sh) before deployment.
-# 2. NUM_UES: Specify the total number of UEs to deploy. This argument is required and must be a whole number.
+# 3. **NUM_UES**: Specifies the number of UEs to deploy in the simulation. This argument is required and must be a whole number.
+#
+# Optional CLI Arguments:
+# 1. **-b**: Runs the build script (`build-digital-twin.sh`) before deployment to prepare the environment.
+# 2. **-xm**: Automatically deploys the monitoring xApps (KPIMon and Grafana) without prompting for user input.
 #
 # Example Usage:
-# ./deploy-digital-twin.sh -b 3
-#
-# This example builds the environment and deploys a network with 3 UEs.
+# - **./deploy-digital-twin.sh -b 3**: Builds the environment and deploys a RAN simulation with 3 UEs.
+# - **./deploy-digital-twin.sh -xm 3**: Deploys 3 UEs and automatically starts the xApps without user confirmation.
 #
 # Notes:
-# - Ensure each UE runs within its own network namespace before starting srsUE.
-# - This script utilizes `gnome-terminal` for opening new tabs for each process.
+# - Each UE runs in its own network namespace to simulate multiple devices attaching to the network.
+# - The script utilizes `gnome-terminal` to open separate tabs for each process, making it easier to manage the environment.
 
 # Function to check for required commands
 check_command() {
@@ -53,24 +57,35 @@ check_command() {
 
 # Function to validate the CLI arguments
 validate_cli() {
-    if [[ $# -lt 1 || $# -gt 2 ]]; then
-        echo "Usage: $0 [-b] <NUM_UES>"
+    build_flag=false
+    xm_flag=false
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -b)
+                build_flag=true
+                shift
+                ;;
+            -xm)
+                xm_flag=true
+                shift
+                ;;
+            *)
+                if [[ "$1" =~ ^[0-9]+$ ]]; then
+                    num_ues=$1
+                    shift
+                else
+                    echo "Error: The number of UEs must be a whole number."
+                    exit 1
+                fi
+                ;;
+        esac
+    done
+
+    if [[ -z "$num_ues" ]]; then
+        echo "Usage: $0 [-b] [-xm] <NUM_UES>"
         exit 1
     fi
-
-    if [[ "$1" == "-b" ]]; then
-        build_flag=true
-        shift
-    else
-        build_flag=false
-    fi
-
-    if ! [[ "$1" =~ ^[0-9]+$ ]]; then
-        echo "Error: The number of UEs must be a whole number."
-        exit 1
-    fi
-
-    num_ues=$1
 }
 
 # Validate the CLI arguments
@@ -169,6 +184,29 @@ gnome-terminal --tab --title="GNU Radio" -- bash -c "
 echo "Launch GNU Radio and click 'Play' to start channel modulation."
 echo "Press Enter once GNU Radio is running."
 read -r
+
+# Check if the -xm flag was provided to automatically run monitoring xApps
+if $xm_flag; then
+    echo "Starting xApps... KPIMon = RIC Monitoring, Grafana = RAN Monitoring..."
+    ./monitoring-xApps.sh
+else
+    # Prompt the user to run the monitoring xApps (KPIMon and Grafana)
+    read -p "Would you like to start monitoring xApps (KPIMon and Grafana)? [Y/n]: " response
+
+    # Default to 'y' if no response is provided
+    response=${response:-y}
+
+    # Convert response to lowercase for consistent comparison
+    response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
+
+    # If the response is 'y', run the monitoring-xApps.sh script
+    if [[ "$response" == "y" ]]; then
+        echo "Starting xApps... KPIMon = RIC Monitoring, Grafana = RAN Monitoring..."
+        ./monitoring-xApps.sh
+    else
+        echo "Skipping monitoring xApps."
+    fi
+fi
 
 echo "Deployment complete! UEs should now be connected to the gNB, and the network is ready."
 echo "You can now simulate traffic with iperf or other tools."
