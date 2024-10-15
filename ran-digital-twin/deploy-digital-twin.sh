@@ -93,8 +93,8 @@ validate_cli "$@"
 
 # If -b flag is provided, run the build script before deployment
 if $build_flag; then
-    echo "Building digital twin environment..."
-    ./build-digital-twin.sh
+    echo "Building digital twin environment with ${num_ues} UEs..."
+    ./build-digital-twin.sh -ue $num_ues
     if [[ $? -ne 0 ]]; then
         echo "Error: build-digital-twin.sh failed."
         exit 1

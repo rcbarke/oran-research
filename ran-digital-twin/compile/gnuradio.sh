@@ -24,7 +24,7 @@ sudo apt-get install -y gnuradio
 ./compile/generate_multi_ue_grc.sh $NUM_UEs
 echo "Generated gnuradio .grc for modulating $NUM_UEs UEs..."
 
+# Stage completed configuration file
 GNURADIO_CONFIG="./configs/multi_ue_scenario.grc"
 echo "Staging gnuradio .grc into ./srsRAN_4G/build/srsue/src/..."
 cp "$GNURADIO_CONFIG" "./srsRAN_4G/build/srsue/src/"
-echo "Need to modify this script to modify ${GNURADIO_CONFIG} for all built UEs..."
