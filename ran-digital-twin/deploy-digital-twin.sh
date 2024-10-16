@@ -154,7 +154,7 @@ for (( i=1; i<=num_ues; i++ )); do
         echo "Creating namespace $namespace..."
         sudo ip netns add "$namespace"
     fi
-
+   
     gnome-terminal --tab --title="UE $i" -- bash -c "
         cd srsRAN_4G/build/srsue/src &&
         echo 'Deploying UE$i...' &&
@@ -182,8 +182,20 @@ gnome-terminal --tab --title="GNU Radio" -- bash -c "
 
 # Wait for user to click Play in GNU Radio
 echo "Launch GNU Radio and click 'Play' to start channel modulation."
-echo "Press Enter once GNU Radio is running."
+echo "Press Enter once GNU Radio is running and all UEs have connected to Open5GS."
 read -r
+
+# Set up ue tunneling now that modulation has started
+echo "Modulation started... configuring default routes for UEs" 
+
+# Default route from UE subnet to AMF/MME
+sudo ip ro add 10.45.0.0/16 via 10.53.1.2
+
+# Route table adds for each UE namespace to core network
+for (( i=1; i<=num_ues; i++ )); do
+    namespace="ue$i"
+    sudo ip netns exec "$namespace" ip route add default via 10.45.1.1 dev tun_srsue   
+done
 
 # Check if the -xm flag was provided to automatically run monitoring xApps
 if $xm_flag; then
