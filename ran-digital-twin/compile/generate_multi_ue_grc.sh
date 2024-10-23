@@ -1,60 +1,16 @@
 #!/bin/bash
-#
-# generate_multi_ue_grc.sh
-#
-# Ryan Barker
-# Clemson University IS-WiN Laboratory
-# ORAN team
-#
-# Description: This script generates a GNU Radio Companion (.grc) configuration for simulating a multi-UE scenario in a virtualized RAN (Radio Access Network) environment using srsRAN.
-#
-# Architecture:
-# 1. srsRAN gNB: Disaggregated CU/DU with ZeroMQ message transport
-# 2. Multiple srsUE Instances: Connected via ZeroMQ for each UE
-#
-# Signal Modulation:
-# - gnuradio: Modulated RF waveform for all UEs with configurable path loss
-#
-# Features:
-# 1. Dynamic generation of GNU Radio blocks for a configurable number of UEs.
-# 2. Path loss control for each UE, calculated as a proportion of the maximum path loss
-# 3. Throttling mechanism to simulate real-time processing with adjustable sample rate.
-# 4. Configurable via CLI for the number of UEs to simulate.
-#
-# Script Flow:
-# - Accepts the number of UEs as a CLI argument.
-# - Dynamically generates the corresponding GNU Radio Companion (.grc) file with correct port assignments, path loss distribution, and connection between UEs and gNB.
-# - Writes the generated configuration to ./configs/multi_ue_scenario.grc.
-#
-# Pre-Conditions and Assumptions:
-# 1. GNU Radio and srsRAN are installed and configured on the host machine.
-# 2. ZeroMQ is used for inter-process communication between gNB and UEs.
-#
-# Required CLI Arguments:
-# 1. num_ues: Specify the total number of UEs to include in the simulation. Default = 3.
 
-# Usage check
+# Check if the number of UEs is passed as an argument
 if [ -z "$1" ]; then
-  echo "Usage: $0 <num_ues>"
-  echo "Please provide the number of UEs as a required argument."
+  echo "Usage: $0 <number_of_UEs>"
   exit 1
 fi
 
-# Variables for user-defined values
+# Number of UEs to configure
 num_ues=$1
-samp_rate=11520000
-slow_down_ratio=4
-max_path_loss=107.76
 
-# Ensure the output directory exists
-mkdir -p ./configs
-
-# Redirect output to the GRC file
-output_file="./configs/multi_ue_scenario.grc"
-exec > $output_file
-
-# Static Header Blocks
-cat <<EOF
+# Output the first static part of the config
+cat <<EOL
 options:
   parameters:
     author: ''
@@ -93,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '$samp_rate'
+    value: '11520000'
   states:
     bus_sink: false
     bus_source: false
@@ -125,30 +81,18 @@ blocks:
     coordinate: [304, 12.0]
     rotation: 0
     state: enabled
+EOL
 
-#### FLOW GRAPH 1: gnb_tx -> ue_rx
-- name: zeromq_gnb_tx
-  id: zeromq_req_source
-  parameters:
-    address: tcp://127.0.0.1:2000
-    affinity: ''
-    alias: ''
-    comment: ''
-    hwm: zmq_hwm
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    pass_tags: 'False'
-    timeout: zmq_timeout
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [128, 156.0]
-    rotation: 0
-    state: true
-- name: blocks_throttle_gnb_tx_to_ue_rx
+# Generate the flow graph blocks for each UE
+for i in $(seq 1 $num_ues); do
+  y_offset_rx=$((76 + ($i - 1) * 96))
+  y_offset_tx=$((332 + ($i - 1) * 96))
+  ue_rx_port=$((2100 + ($i - 1) * 100))
+  ue_tx_port=$((ue_rx_port + 1))
+
+  cat <<EOL
+### UE $i Rx Throttle and Pathloss
+- name: ue${i}_rx_channel_rate
   id: blocks_throttle
   parameters:
     affinity: ''
@@ -157,27 +101,16 @@ blocks:
     ignoretag: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: 1.0*samp_rate/(1.0*slow_down_ratio)
+    samples_per_second: ue${i}_channel_rate
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [392, 172.0]
+    coordinate: [500, $y_offset_rx]
     rotation: 0
     state: true
-EOF
-
-# Generate dynamic UE blocks for Flow Graph 1 (gnb_tx -> ue_rx)
-for ((i=1; i<=$num_ues; i++))
-do
-  ue_port=$((2000 + $i*100))
-  ue_rx_port=$((ue_port))
-  ue_tx_port=$((ue_port + 1))
-
-  cat <<EOF
-### UE $i Rx Pathloss and Sink Blocks
 - name: blocks_ue${i}_rx_pathloss
   id: blocks_multiply_const_vxx
   parameters:
@@ -193,14 +126,13 @@ do
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [664, $((76 + ($i - 1)*96)).0]
+    coordinate: [664, $y_offset_rx]
     rotation: 0
     state: true
-
 - name: zeromq_ue${i}_rx
   id: zeromq_rep_sink
   parameters:
-    address: tcp://127.0.0.1:${ue_rx_port}
+    address: tcp://127.0.0.1:$ue_rx_port
     affinity: ''
     alias: ''
     comment: ''
@@ -213,28 +145,15 @@ do
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [856, $((60 + ($i - 1)*96)).0]
+    coordinate: [856, $((y_offset_rx - 16))]
     rotation: 0
     state: true
-EOF
-done
 
-# Flow Graph 2: ue_tx -> gnb_rx
-cat <<EOF
-#### FLOW GRAPH 2: ue_tx -> gnb_rx
-EOF
-
-# Generate dynamic UE Tx blocks for Flow Graph 2 (ue_tx -> gnb_rx)
-for ((i=1; i<=$num_ues; i++))
-do
-  ue_tx_port=$((2001 + i*100))
-
-  cat <<EOF
-### UE $i Tx Pathloss and Source Blocks
+### UE $i Tx Throttle and Pathloss
 - name: zeromq_ue${i}_tx
   id: zeromq_req_source
   parameters:
-    address: tcp://127.0.0.1:${ue_tx_port}
+    address: tcp://127.0.0.1:$ue_tx_port
     affinity: ''
     alias: ''
     comment: ''
@@ -249,10 +168,9 @@ do
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [128, $((332 + ($i - 1)*88)).0]
+    coordinate: [128, $y_offset_tx]
     rotation: 0
     state: true
-
 - name: blocks_ue${i}_tx_pathloss
   id: blocks_multiply_const_vxx
   parameters:
@@ -268,144 +186,127 @@ do
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, $((348 + ($i - 1)*88)).0]
+    coordinate: [384, $((y_offset_tx + 16))]
     rotation: 0
     state: true
-EOF
+EOL
 done
 
-# Static blocks for gNB Rx (common to all UEs)
-cat <<EOF
-### gNB Rx Combine and Sink Block
-- name: blocks_ue_tx_to_gnb_rx_add
-  id: blocks_add_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '$num_ues'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [648, 408.0]
-    rotation: 0
-    state: true
-
-- name: zeromq_gnb_rx
-  id: zeromq_rep_sink
-  parameters:
-    address: tcp://127.0.0.1:2001
-    affinity: ''
-    alias: ''
-    comment: ''
-    hwm: zmq_hwm
-    pass_tags: 'False'
-    timeout: zmq_timeout
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [856, 420.0]
-    rotation: 0
-    state: true
-EOF
-
-# QT GUI Blocks for controlling the simulation
-cat <<EOF
+# Generate QT GUI variables
+cat <<EOL
 #### QT GUI Blocks
-### Static
-- name: slow_down_ratio
+### QT GUI Variable for GNB Channel Rate
+- name: gnb_channel_rate
   id: variable_qtgui_range
   parameters:
     comment: ''
     gui_hint: ''
-    label: Time Slow Down Ratio
+    label: GNB Channel Rate
     min_len: '200'
     orient: QtCore.Qt.Horizontal
     rangeType: float
-    start: '1'
+    start: '0'
     step: '1'
     stop: '32'
-    value: '$slow_down_ratio'
+    value: '4'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1064, 468]
+    coordinate: [1064, 40]
     rotation: 0
     state: true
-EOF
+EOL
 
-# Generate dynamic UE pathloss blocks for QT GUI
-for ((i=1; i<=$num_ues; i++))
-do
-  # Calculate path loss based on the formula i/n * max_path_loss
-  default_path_loss=$(echo "$i/$num_ues * $max_path_loss" | bc -l)
+# Loop for QT GUI Variables for UEs
+for i in $(seq 1 $num_ues); do
+  qt_coord_y_rate=$((80 + ($i - 1) * 40))
+  qt_coord_y_pathloss=$((20 + ($i - 1) * 150))
 
-  cat <<EOF
+  cat <<EOL
+### QT GUI Variable for UE $i Channel Rate
+- name: ue${i}_channel_rate
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE$i Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, $qt_coord_y_rate]
+    rotation: 0
+    state: true
+
 ### UE $i Pathloss Control
 - name: ue${i}_path_loss_db
   id: variable_qtgui_range
   parameters:
     comment: ''
     gui_hint: ''
-    label: UE${i} Pathloss [dB]
+    label: UE$i Pathloss [dB]
     min_len: '200'
     orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '0'
     step: '1'
-    stop: '$max_path_loss'
-    value: '${default_path_loss}'
+    stop: '107.76'
+    value: '21.55200000000000000000'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, $((20 + ($i - 1)*150)).0]
+    coordinate: [1088, $qt_coord_y_pathloss]
     rotation: 0
     state: true
-EOF
+EOL
 done
 
-# Generate the connections for all UEs in the flow graphs
-cat <<EOF
+# Final connection blocks
+cat <<EOL
 connections:
-#### Flow Graph 1 Connections: gnb_tx to ue_rx
-EOF
+# gNB Tx to all UEs (Flow Graph 1)
+- [zeromq_gnb_tx, '0', gnb_tx_channel_rate, '0']
+EOL
 
-for ((i=1; i<=$num_ues; i++))
-do
-  cat <<EOF
-- [zeromq_gnb_tx, '0', blocks_throttle_gnb_tx_to_ue_rx, '0']
-- [blocks_throttle_gnb_tx_to_ue_rx, '0', blocks_ue${i}_rx_pathloss, '0']
+# Generate the connections for UE Rx paths, referencing the correct outputs from gNB
+for i in $(seq 1 $num_ues); do
+  cat <<EOL
+- [gnb_tx_channel_rate, '0', ue${i}_rx_channel_rate, '0']
+- [ue${i}_rx_channel_rate, '0', blocks_ue${i}_rx_pathloss, '0']
 - [blocks_ue${i}_rx_pathloss, '0', zeromq_ue${i}_rx, '0']
-EOF
+EOL
 done
 
-cat <<EOF
-#### Flow Graph 2 Connections: ue_tx to gnb_rx
-EOF
+cat <<EOL
+# UE Tx to gNB Rx (Flow Graph 2)
+EOL
 
-for ((i=1; i<=$num_ues; i++))
-do
-  cat <<EOF
+# Generate the connections for UE Tx paths to gNB
+for i in $(seq 1 $num_ues); do
+  cat <<EOL
 - [zeromq_ue${i}_tx, '0', blocks_ue${i}_tx_pathloss, '0']
-- [blocks_ue${i}_tx_pathloss, '0', blocks_ue_tx_to_gnb_rx_add, '$((i - 1))']
-EOF
+- [blocks_ue${i}_tx_pathloss, '0', ue${i}_tx_channel_rate, '0']
+- [ue${i}_tx_channel_rate, '0', blocks_ue_tx_to_gnb_rx_add, '$(($i - 1))']
+EOL
 done
 
-cat <<EOF
-- [blocks_ue_tx_to_gnb_rx_add, '0', zeromq_gnb_rx, '0']
+cat <<EOL
+- [blocks_ue_tx_to_gnb_rx_add, '0', gnb_rx_channel_rate, '0']
+- [gnb_rx_channel_rate, '0', zeromq_gnb_rx, '0']
 
 metadata:
   file_format: 1
-EOF
+EOL
+

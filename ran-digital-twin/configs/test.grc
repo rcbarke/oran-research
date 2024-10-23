@@ -1,0 +1,1098 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: multi_ue_scenario
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: srsRAN_multi_UE
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '11520000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 12]
+    rotation: 0
+    state: enabled
+- name: zmq_hwm
+  id: variable
+  parameters:
+    comment: ''
+    value: '-1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [432, 12.0]
+    rotation: 0
+    state: enabled
+- name: zmq_timeout
+  id: variable
+  parameters:
+    comment: ''
+    value: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 12.0]
+    rotation: 0
+    state: enabled
+
+#### FLOW GRAPH 1: gnb_tx -> ue_rx
+- name: zeromq_gnb_tx
+  id: zeromq_req_source
+  parameters:
+    address: tcp://127.0.0.1:2000
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [128, 156.0]
+    rotation: 0
+    state: true
+- name: gnb_tx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*gnb_tx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 172.0]
+    rotation: 0
+    state: true
+
+### UE 1 Rx Throttle and Pathloss
+- name: ue1_rx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue1_rx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 76.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue1_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue1_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 76.0]
+    rotation: 0
+    state: true
+
+- name: zeromq_ue1_rx
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://127.0.0.1:2100
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 60.0]
+    rotation: 0
+    state: true
+
+### UE 2 Rx Throttle and Pathloss
+- name: ue2_rx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue2_rx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 172.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue2_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue2_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 172.0]
+    rotation: 0
+    state: true
+
+- name: zeromq_ue2_rx
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://127.0.0.1:2200
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 156.0]
+    rotation: 0
+    state: true
+
+### UE 3 Rx Throttle and Pathloss
+- name: ue3_rx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue3_rx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 268.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue3_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue3_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 268.0]
+    rotation: 0
+    state: true
+
+- name: zeromq_ue3_rx
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://127.0.0.1:2300
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 252.0]
+    rotation: 0
+    state: true
+
+### UE 4 Rx Throttle and Pathloss
+- name: ue4_rx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue4_rx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 364.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue4_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue4_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 364.0]
+    rotation: 0
+    state: true
+
+- name: zeromq_ue4_rx
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://127.0.0.1:2400
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 348.0]
+    rotation: 0
+    state: true
+
+### UE 5 Rx Throttle and Pathloss
+- name: ue5_rx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue5_rx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 460.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue5_rx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue5_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 460.0]
+    rotation: 0
+    state: true
+
+- name: zeromq_ue5_rx
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://127.0.0.1:2500
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 444.0]
+    rotation: 0
+    state: true
+
+#### FLOW GRAPH 2: ue_tx -> gnb_rx
+### UE 1 Tx Throttle and Pathloss
+- name: zeromq_ue1_tx
+  id: zeromq_req_source
+  parameters:
+    address: tcp://127.0.0.1:2101
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [128, 332.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue1_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue1_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 348.0]
+    rotation: 0
+    state: true
+
+- name: ue1_tx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue1_tx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 348.0]
+    rotation: 0
+    state: true
+
+### UE 2 Tx Throttle and Pathloss
+- name: zeromq_ue2_tx
+  id: zeromq_req_source
+  parameters:
+    address: tcp://127.0.0.1:2201
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [128, 420.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue2_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue2_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 436.0]
+    rotation: 0
+    state: true
+
+- name: ue2_tx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue2_tx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 436.0]
+    rotation: 0
+    state: true
+
+### UE 3 Tx Throttle and Pathloss
+- name: zeromq_ue3_tx
+  id: zeromq_req_source
+  parameters:
+    address: tcp://127.0.0.1:2301
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [128, 508.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue3_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue3_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 524.0]
+    rotation: 0
+    state: true
+
+- name: ue3_tx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue3_tx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 524.0]
+    rotation: 0
+    state: true
+
+### UE 4 Tx Throttle and Pathloss
+- name: zeromq_ue4_tx
+  id: zeromq_req_source
+  parameters:
+    address: tcp://127.0.0.1:2401
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [128, 596.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue4_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue4_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 612.0]
+    rotation: 0
+    state: true
+
+- name: ue4_tx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue4_tx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 612.0]
+    rotation: 0
+    state: true
+
+### UE 5 Tx Throttle and Pathloss
+- name: zeromq_ue5_tx
+  id: zeromq_req_source
+  parameters:
+    address: tcp://127.0.0.1:2501
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [128, 684.0]
+    rotation: 0
+    state: true
+
+- name: blocks_ue5_tx_pathloss
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 10**(-1.0*ue5_path_loss_db/20.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 700.0]
+    rotation: 0
+    state: true
+
+- name: ue5_tx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*ue5_tx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [500, 700.0]
+    rotation: 0
+    state: true
+
+### gNB Rx Combine and Throttle
+- name: blocks_ue_tx_to_gnb_rx_add
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '5'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 408.0]
+    rotation: 0
+    state: true
+
+- name: gnb_rx_channel_rate
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: 1.0*samp_rate/(1.0*gnb_rx_channel_rate_var)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [700, 420.0]
+    rotation: 0
+    state: true
+
+- name: zeromq_gnb_rx
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://127.0.0.1:2001
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: zmq_hwm
+    pass_tags: 'False'
+    timeout: zmq_timeout
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 420.0]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for gNB Tx Channel Rate
+- name: gnb_tx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: gNB Tx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 40]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 1 Rx Channel Rate
+- name: ue1_rx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE1 Rx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 80]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 2 Rx Channel Rate
+- name: ue2_rx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE2 Rx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 120]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 3 Rx Channel Rate
+- name: ue3_rx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE3 Rx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 160]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 4 Rx Channel Rate
+- name: ue4_rx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE4 Rx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 200]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 5 Rx Channel Rate
+- name: ue5_rx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE5 Rx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 240]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 1 Tx Channel Rate
+- name: ue1_tx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE1 Tx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 280]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 2 Tx Channel Rate
+- name: ue2_tx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE2 Tx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 320]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 3 Tx Channel Rate
+- name: ue3_tx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE3 Tx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 360]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 4 Tx Channel Rate
+- name: ue4_tx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE4 Tx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 400]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for UE 5 Tx Channel Rate
+- name: ue5_tx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: UE5 Tx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 440]
+    rotation: 0
+    state: true
+
+### QT GUI Variable for gNB Rx Channel Rate
+- name: gnb_rx_channel_rate_var
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: gNB Rx Channel Rate
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '32'
+    value: '4'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 480]
+    rotation: 0
+    state: true
+
+### Flow Graph 1: gNB Tx -> UE Rx
+connections:
+- [zeromq_gnb_tx, '0', gnb_tx_channel_rate, '0']
+- [gnb_tx_channel_rate, '0', ue1_rx_channel_rate, '0']
+- [ue1_rx_channel_rate, '0', blocks_ue1_rx_pathloss, '0']
+- [blocks_ue1_rx_pathloss, '0', zeromq_ue1_rx, '0']
+- [gnb_tx_channel_rate, '0', ue2_rx_channel_rate, '0']
+- [ue2_rx_channel_rate, '0', blocks_ue2_rx_pathloss, '0']
+- [blocks_ue2_rx_pathloss, '0', zeromq_ue2_rx, '0']
+- [gnb_tx_channel_rate, '0', ue3_rx_channel_rate, '0']
+- [ue3_rx_channel_rate, '0', blocks_ue3_rx_pathloss, '0']
+- [blocks_ue3_rx_pathloss, '0', zeromq_ue3_rx, '0']
+- [gnb_tx_channel_rate, '0', ue4_rx_channel_rate, '0']
+- [ue4_rx_channel_rate, '0', blocks_ue4_rx_pathloss, '0']
+- [blocks_ue4_rx_pathloss, '0', zeromq_ue4_rx, '0']
+- [gnb_tx_channel_rate, '0', ue5_rx_channel_rate, '0']
+- [ue5_rx_channel_rate, '0', blocks_ue5_rx_pathloss, '0']
+- [blocks_ue5_rx_pathloss, '0', zeromq_ue5_rx, '0']
+
+### Flow Graph 2: UE Tx -> gNB Rx
+- [zeromq_ue1_tx, '0', blocks_ue1_tx_pathloss, '0']
+- [blocks_ue1_tx_pathloss, '0', ue1_tx_channel_rate, '0']
+- [ue1_tx_channel_rate, '0', blocks_ue_tx_to_gnb_rx_add, '0']
+- [zeromq_ue2_tx, '0', blocks_ue2_tx_pathloss, '0']
+- [blocks_ue2_tx_pathloss, '0', ue2_tx_channel_rate, '0']
+- [ue2_tx_channel_rate, '0', blocks_ue_tx_to_gnb_rx_add, '1']
+- [zeromq_ue3_tx, '0', blocks_ue3_tx_pathloss, '0']
+- [blocks_ue3_tx_pathloss, '0', ue3_tx_channel_rate, '0']
+- [ue3_tx_channel_rate, '0', blocks_ue_tx_to_gnb_rx_add, '2']
+- [zeromq_ue4_tx, '0', blocks_ue4_tx_pathloss, '0']
+- [blocks_ue4_tx_pathloss, '0', ue4_tx_channel_rate, '0']
+- [ue4_tx_channel_rate, '0', blocks_ue_tx_to_gnb_rx_add, '3']
+- [zeromq_ue5_tx, '0', blocks_ue5_tx_pathloss, '0']
+- [blocks_ue5_tx_pathloss, '0', ue5_tx_channel_rate, '0']
+- [ue5_tx_channel_rate, '0', blocks_ue_tx_to_gnb_rx_add, '4']
+- [blocks_ue_tx_to_gnb_rx_add, '0', gnb_rx_channel_rate, '0']
+- [gnb_rx_channel_rate, '0', zeromq_gnb_rx, '0']
