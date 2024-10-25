@@ -77,7 +77,7 @@ UE_NET_ADDR="10.45.1.0"
 UE_NETMASK="255.255.255.0"
 
 # Default values for UE-related flags
-TOTAL_UES=3       # Total number of UEs across the network
+TOTAL_UES=30      # Total number of UEs across the network
 LOCAL_UES=""     # Number of UEs on this machine, will be set after parsing flags.
 UE_START_IDX=1    # Starting index of UEs on this machine. One based indexing.
 

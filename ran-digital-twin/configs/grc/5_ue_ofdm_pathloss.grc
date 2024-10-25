@@ -9,7 +9,7 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: qt_gui
+    generate_options: no_gui
     hier_block_src_path: '.:'
     id: multi_ue_scenario
     max_nouts: '0'
@@ -28,7 +28,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [8, 12.0]
     rotation: 0
     state: enabled
 
@@ -49,7 +49,31 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 372.0]
+    coordinate: [8, 300.0]
+    rotation: 0
+    state: true
+- name: fft_length
+  id: variable
+  parameters:
+    comment: ''
+    value: '1024'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [96, 108.0]
+    rotation: 0
+    state: true
+- name: max_pathloss_db
+  id: variable
+  parameters:
+    comment: ''
+    value: '107.76'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 108.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -61,112 +85,139 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
+    coordinate: [184, 28.0]
     rotation: 0
     state: enabled
-- name: ue1_path_loss_db
-  id: variable_qtgui_range
+- name: total_prb
+  id: variable
   parameters:
     comment: ''
-    gui_hint: ''
-    label: UE1 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '107.76'
-    value: '21.55200000000000000000'
-    widget: counter_slider
+    value: '52'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1888, 68.0]
+    coordinate: [8, 108.0]
     rotation: 0
     state: true
-- name: ue2_path_loss_db
-  id: variable_qtgui_range
+- name: ue1_pathloss_db
+  id: variable
   parameters:
     comment: ''
-    gui_hint: ''
-    label: UE2 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '107.76'
-    value: '43.10400000000000000000'
-    widget: counter_slider
+    value: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1888, 276.0]
+    coordinate: [8, 236.0]
     rotation: 0
     state: true
-- name: ue3_path_loss_db
-  id: variable_qtgui_range
+- name: ue1_prb
+  id: variable
   parameters:
     comment: ''
-    gui_hint: ''
-    label: UE3 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '107.76'
-    value: '64.65600000000000000000'
-    widget: counter_slider
+    value: '2'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1888, 492.0]
+    coordinate: [8, 172.0]
     rotation: 0
     state: true
-- name: ue4_path_loss_db
-  id: variable_qtgui_range
+- name: ue2_pathloss_db
+  id: variable
   parameters:
     comment: ''
-    gui_hint: ''
-    label: UE4 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '107.76'
-    value: '86.20800000000000000000'
-    widget: counter_slider
+    value: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1888, 700.0]
+    coordinate: [128, 236.0]
     rotation: 0
     state: true
-- name: ue5_path_loss_db
-  id: variable_qtgui_range
+- name: ue2_prb
+  id: variable
   parameters:
     comment: ''
-    gui_hint: ''
-    label: UE5 Pathloss [dB]
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: 100e6
-    value: 10e6
-    widget: counter_slider
+    value: '2'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1888, 916.0]
+    coordinate: [88, 172.0]
+    rotation: 0
+    state: true
+- name: ue3_pathloss_db
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [248, 236.0]
+    rotation: 0
+    state: true
+- name: ue3_prb
+  id: variable
+  parameters:
+    comment: ''
+    value: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [168, 172.0]
+    rotation: 0
+    state: true
+- name: ue4_pathloss_db
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [368, 236.0]
+    rotation: 0
+    state: true
+- name: ue4_prb
+  id: variable
+  parameters:
+    comment: ''
+    value: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [248, 172.0]
+    rotation: 0
+    state: true
+- name: ue5_pathloss_db
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [488, 236.0]
+    rotation: 0
+    state: true
+- name: ue5_prb
+  id: variable
+  parameters:
+    comment: ''
+    value: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [328, 172.0]
     rotation: 0
     state: true
 - name: zmq_hwm
@@ -178,7 +229,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [432, 12.0]
+    coordinate: [384, 28.0]
     rotation: 0
     state: enabled
 - name: zmq_timeout
@@ -190,7 +241,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [304, 12.0]
+    coordinate: [280, 28.0]
     rotation: 0
     state: enabled
 - name: blocks_ue1_rx_pathloss
@@ -199,7 +250,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue1_path_loss_db/20.0)
+    const: 10**(-1.0*ue1_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -217,7 +268,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue1_path_loss_db/20.0)
+    const: 10**(-1.0*ue1_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -235,7 +286,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue2_path_loss_db/20.0)
+    const: 10**(-1.0*ue2_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -253,7 +304,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue2_path_loss_db/20.0)
+    const: 10**(-1.0*ue2_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -271,7 +322,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue3_path_loss_db/20.0)
+    const: 10**(-1.0*ue3_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -289,7 +340,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue3_path_loss_db/20.0)
+    const: 10**(-1.0*ue3_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -307,7 +358,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue4_path_loss_db/20.0)
+    const: 10**(-1.0*ue4_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -325,7 +376,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue4_path_loss_db/20.0)
+    const: 10**(-1.0*ue4_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -343,7 +394,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue5_path_loss_db/20.0)
+    const: 10**(-1.0*ue5_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -361,7 +412,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 10**(-1.0*ue5_path_loss_db/20.0)
+    const: 10**(-1.0*ue5_pathloss_db/20.0)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -589,20 +640,21 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: '"length"'
+    occupied_carriers: '[list(range(int((-1 * ue1_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue1_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -616,20 +668,21 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: '"length"'
+    occupied_carriers: '[list(range(int((-1 * ue2_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue2_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -643,20 +696,21 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: '"length"'
+    occupied_carriers: '[list(range(int((-1 * ue3_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue3_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -670,20 +724,21 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: '"length"'
+    occupied_carriers: '[list(range(int((-1 * ue4_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue4_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -697,20 +752,21 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: '"length"'
+    occupied_carriers: '[list(range(int((-1 * ue5_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue5_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -724,20 +780,21 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: '"length"'
+    occupied_carriers: '[list(range(int((-1 * total_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * total_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -751,26 +808,27 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: length
+    occupied_carriers: '[list(range(int((-1 * total_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * total_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     rolloff: '0'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [672, 356.0]
+    coordinate: [688, 356.0]
     rotation: 0
     state: true
 - name: digital_ofdm_tx_0_4_0
@@ -779,21 +837,22 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: length
+    occupied_carriers: '[list(range(int((-1 * ue1_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue1_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     rolloff: '0'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -801,27 +860,28 @@ blocks:
     coordinate: [680, 1172.0]
     rotation: 0
     state: true
-- name: digital_ofdm_tx_0_4_1
+- name: digital_ofdm_tx_0_4_0_0
   id: digital_ofdm_tx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: length
+    occupied_carriers: '[list(range(int((-1 * ue2_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue2_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     rolloff: '0'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -829,27 +889,28 @@ blocks:
     coordinate: [680, 1412.0]
     rotation: 0
     state: true
-- name: digital_ofdm_tx_0_4_2
+- name: digital_ofdm_tx_0_4_0_1
   id: digital_ofdm_tx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: length
+    occupied_carriers: '[list(range(int((-1 * ue3_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue3_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     rolloff: '0'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -857,27 +918,28 @@ blocks:
     coordinate: [680, 1652.0]
     rotation: 0
     state: true
-- name: digital_ofdm_tx_0_4_3
+- name: digital_ofdm_tx_0_4_0_2
   id: digital_ofdm_tx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: length
+    occupied_carriers: '[list(range(int((-1 * ue4_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue4_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     rolloff: '0'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -885,27 +947,28 @@ blocks:
     coordinate: [680, 1892.0]
     rotation: 0
     state: true
-- name: digital_ofdm_tx_0_4_3_0
+- name: digital_ofdm_tx_0_4_0_3
   id: digital_ofdm_tx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '72'
-    fft_len: '1024'
+    cp_len: int(0.07*fft_length)
+    fft_len: fft_length
     header_mod: '"QPSK"'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: '[list(range(-312, 0)) + list(range(1, 312))]'
-    packet_len_key: length
+    occupied_carriers: '[list(range(int((-1 * ue5_prb * 12) / 2), 0)) + list(range(1,
+      int((1 * ue5_prb * 12) / 2)))]'
+    packet_len_key: ''
     payload_mod: '"QPSK"'
     pilot_carriers: '[[ -21, -7, 7, 21 ]]'
     pilot_symbols: '[[1, 1, 1, -1]]'
     rolloff: '0'
     scramble_bits: 'False'
-    sync_word1: '[0] * 1024'
-    sync_word2: '[1] * 1024'
+    sync_word1: '[0] * fft_length'
+    sync_word2: '[1] * fft_length'
   states:
     bus_sink: false
     bus_source: false
@@ -1168,10 +1231,10 @@ connections:
 - [blocks_ue_tx_to_gnb_rx_add, '0', digital_ofdm_rx_1_0_4, '0']
 - [digital_constellation_decoder_cb_0, '0', digital_ofdm_tx_0_4, '0']
 - [digital_constellation_decoder_cb_0_0, '0', digital_ofdm_tx_0_4_0, '0']
-- [digital_constellation_decoder_cb_0_1, '0', digital_ofdm_tx_0_4_1, '0']
-- [digital_constellation_decoder_cb_0_2, '0', digital_ofdm_tx_0_4_2, '0']
-- [digital_constellation_decoder_cb_0_3, '0', digital_ofdm_tx_0_4_3, '0']
-- [digital_constellation_decoder_cb_0_4, '0', digital_ofdm_tx_0_4_3_0, '0']
+- [digital_constellation_decoder_cb_0_1, '0', digital_ofdm_tx_0_4_0_0, '0']
+- [digital_constellation_decoder_cb_0_2, '0', digital_ofdm_tx_0_4_0_1, '0']
+- [digital_constellation_decoder_cb_0_3, '0', digital_ofdm_tx_0_4_0_2, '0']
+- [digital_constellation_decoder_cb_0_4, '0', digital_ofdm_tx_0_4_0_3, '0']
 - [digital_constellation_encoder_bc_0, '0', zeromq_ue1_rx, '0']
 - [digital_constellation_encoder_bc_0_0, '0', zeromq_ue2_rx, '0']
 - [digital_constellation_encoder_bc_0_1, '0', zeromq_ue3_rx, '0']
@@ -1190,10 +1253,10 @@ connections:
 - [digital_ofdm_tx_0_4, '0', blocks_ue4_rx_pathloss, '0']
 - [digital_ofdm_tx_0_4, '0', blocks_ue5_rx_pathloss, '0']
 - [digital_ofdm_tx_0_4_0, '0', blocks_ue1_tx_pathloss, '0']
-- [digital_ofdm_tx_0_4_1, '0', blocks_ue2_tx_pathloss, '0']
-- [digital_ofdm_tx_0_4_2, '0', blocks_ue3_tx_pathloss, '0']
-- [digital_ofdm_tx_0_4_3, '0', blocks_ue4_tx_pathloss, '0']
-- [digital_ofdm_tx_0_4_3_0, '0', blocks_ue5_tx_pathloss, '0']
+- [digital_ofdm_tx_0_4_0_0, '0', blocks_ue2_tx_pathloss, '0']
+- [digital_ofdm_tx_0_4_0_1, '0', blocks_ue3_tx_pathloss, '0']
+- [digital_ofdm_tx_0_4_0_2, '0', blocks_ue4_tx_pathloss, '0']
+- [digital_ofdm_tx_0_4_0_3, '0', blocks_ue5_tx_pathloss, '0']
 - [zeromq_gnb_tx, '0', digital_constellation_decoder_cb_0, '0']
 - [zeromq_ue1_tx, '0', digital_constellation_decoder_cb_0_0, '0']
 - [zeromq_ue2_tx, '0', digital_constellation_decoder_cb_0_1, '0']

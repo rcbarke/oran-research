@@ -175,18 +175,17 @@ read -r
 gnome-terminal --tab --title="GNU Radio" -- bash -c "
     cd srsRAN_4G/build/srsue/src &&
     echo 'Launching GNU Radio for modulation...' &&
-    sudo gnuradio-companion ./multi_ue_scenario.grc &&
-    echo 'Click the Play button in GNU Radio to start modulation.'
+    sudo ./multi_ue_scenario.py;
     exec bash
 "
 
 # Wait for user to click Play in GNU Radio
-echo "Launch GNU Radio and click 'Play' to start channel modulation."
+echo "Launch GNU Radio and ensure QPSK modulation has started..."
 echo "Press Enter once GNU Radio is running and all UEs have connected to Open5GS."
 read -r
 
 # Set up ue tunneling now that modulation has started
-echo "Modulation started... configuring default routes for UEs" 
+echo "All UEs connected... configuring default routes for UEs" 
 
 # Default route from UE subnet to AMF/MME
 sudo ip ro add 10.45.0.0/16 via 10.53.1.2
