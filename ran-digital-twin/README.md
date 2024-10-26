@@ -31,7 +31,7 @@ The build scripts will automatically install and configure all necessary depende
 │   ├── srsgnb.sh                       # Builds srsRAN gNB config: Currently supports single gNB @ Core
 |   ├── srsue.sh                        # Builds srsUE configs and synchronizes with Open5GS database
 |   ├── gnuradio.sh                     # Builds and configures gnuradio
-|   └── generate_multi_ue_grc.sh        # Builds dynamic gnuradio grc files
+|   └── generate_multi_ue_py.sh         # Builds dynamic gnuradio python files
 ├── configs/                            # Configuration files for RAN and UE components
 ├── oran-sc-ric/                        # Source files and builds for OSC RIC (added after build)
 ├── srsRAN_4G/                          # Source files and builds for srsRAN 4G UE (added after build)
@@ -185,18 +185,18 @@ This script installs gnuradio, calls `./generate_multi_ue_grc.sh <NUM_UEs>` to d
 
 ---
 
-### generate_multi_ue_grc.sh
+### generate_multi_ue_py.sh
 
-This script generates the config file for gnuradio modulation for a dynamic amount of passed in UEs. It leverages configurable path loss values and places UEs at even spacing across the network at launch. Once gnuradio is executed, these pathlosses can be adjusted with sliders during simulation via the gnu-companion app GUI.
+This script generates the config file for gnuradio modulation for a dynamic amount of passed in UEs. The generated script allows for pathloss and prb allocation per UE to be changed by writing to ue_config.json while the script is running. 
 
 ---
 
 ### Usage
 ```bash
-./generate_multi_ue_grc.sh 20
+./generate_multi_ue_py.sh 30
 ```
 
-This will generate .grc file for 20 UEs, modulating their RF signal processing dynamically.
+This will generate .grc file for 30 UEs, modulating their RF signal processing dynamically.
 
 ### Configuration Files (`configs/`)
 
@@ -258,7 +258,7 @@ sudo ip netns exec ue1 iperf -c 10.45.1.1 -u -b 10M -i 1 -t 60 # Simulates UL tr
 ## Future Enhancements
 
 - Add support for edge RAN deployments: Hosting UEs from a separate VM for processing offload
-- Investigate enhancements to the E2Term interface to facilitate future xApp development.
+- Add E2SM node to SRSRAN to further enhance RAN CU-CP optimization commands
 - Integration with additional xApps for enhanced performance monitoring and network optimization
 
 ## References

@@ -35,36 +35,34 @@ fi
 # Define the output file
 OUTPUT_FILE="./configs/ue_config.json"
 
-# Start writing the JSON structure
-cat <<EOL > "$OUTPUT_FILE"
-{
-EOL
+# Start the JSON array
+echo "[" > "$OUTPUT_FILE"
 
 # Loop to generate config for each UE
 for ((i=1; i<=NUM_UES; i++)); do
     if [ $i -eq $NUM_UES ]; then
         # If it's the last UE, don't add a trailing comma
         cat <<EOL >> "$OUTPUT_FILE"
-    "${i}": {
-        "prb": 2,
+    {
+        "id": $i,
+        "prb": 26,
         "pathloss": 20
     }
 EOL
     else
         # For all other UEs, add a trailing comma
         cat <<EOL >> "$OUTPUT_FILE"
-    "${i}": {
-        "prb": 2,
+    {
+        "id": $i,
+        "prb": 26,
         "pathloss": 20
     },
 EOL
     fi
 done
 
-# Close the JSON structure
-cat <<EOL >> "$OUTPUT_FILE"
-}
-EOL
+# Close the JSON array
+echo "]" >> "$OUTPUT_FILE"
 
 # Print success message
 echo "ue_config.json file with $NUM_UES UEs generated successfully!"

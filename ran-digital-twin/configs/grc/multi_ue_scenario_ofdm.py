@@ -25,8 +25,6 @@ from gnuradio import eng_notation
 from gnuradio import zeromq
 
 
-
-
 class multi_ue_scenario(gr.top_block):
 
     def __init__(self):
@@ -37,69 +35,38 @@ class multi_ue_scenario(gr.top_block):
         ##################################################
         self.zmq_timeout = zmq_timeout = 100
         self.zmq_hwm = zmq_hwm = -1
-        self.ue5_prb = ue5_prb = 2
-        self.ue5_pathloss_db = ue5_pathloss_db = 20
-        self.ue4_prb = ue4_prb = 2
-        self.ue4_pathloss_db = ue4_pathloss_db = 20
-        self.ue3_prb = ue3_prb = 2
-        self.ue3_pathloss_db = ue3_pathloss_db = 20
-        self.ue2_prb = ue2_prb = 2
-        self.ue2_pathloss_db = ue2_pathloss_db = 20
         self.ue1_prb = ue1_prb = 2
         self.ue1_pathloss_db = ue1_pathloss_db = 20
+        self.ue2_prb = ue2_prb = 2
+        self.ue2_pathloss_db = ue2_pathloss_db = 20
+        self.ue3_prb = ue3_prb = 2
+        self.ue3_pathloss_db = ue3_pathloss_db = 20
         self.total_prb = total_prb = 52
         self.samp_rate = samp_rate = 11520000
         self.max_pathloss_db = max_pathloss_db = 107.76
         self.fft_length = fft_length = 1024
         self.constellation_qpsk = constellation_qpsk = digital.constellation_qpsk().base()
 
+
         ##################################################
         # Blocks
         ##################################################
-        self.zeromq_ue5_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2501', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue5_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2500', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue4_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2401', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue4_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2400', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue3_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2301', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue3_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2300', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue2_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2201', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue2_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2200', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue1_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2101', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue1_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2100', zmq_timeout, False, zmq_hwm)
         self.zeromq_gnb_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2000', zmq_timeout, False, zmq_hwm)
         self.zeromq_gnb_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2001', zmq_timeout, False, zmq_hwm)
-        self.digital_ofdm_tx_ue5 = digital.ofdm_tx(
-            fft_len=fft_length,
-            cp_len=int(0.07*fft_length),
-            packet_length_tag_key='length',
-            occupied_carriers=[list(range(int((-1 * ue5_prb * 12) / 2), 0)) + list(range(1, int((1 * ue5_prb * 12) / 2)))],
-            pilot_carriers=[[ -21, -7, 7, 21 ]],
-            pilot_symbols=[[1, 1, 1, -1]],
-            sync_word1=[0] * fft_length,
-            sync_word2=[1] * fft_length,
-            bps_header=2,
-            bps_payload=2,
-            rolloff=0,
-            debug_log=False,
-            scramble_bits=False)
-        self.digital_ofdm_tx_ue4 = digital.ofdm_tx(
-            fft_len=fft_length,
-            cp_len=int(0.07*fft_length),
-            packet_length_tag_key='length',
-            occupied_carriers=[list(range(int((-1 * ue4_prb * 12) / 2), 0)) + list(range(1, int((1 * ue4_prb * 12) / 2)))],
-            pilot_carriers=[[ -21, -7, 7, 21 ]],
-            pilot_symbols=[[1, 1, 1, -1]],
-            sync_word1=[0] * fft_length,
-            sync_word2=[1] * fft_length,
-            bps_header=2,
-            bps_payload=2,
-            rolloff=0,
-            debug_log=False,
-            scramble_bits=False)
+        self.zeromq_ue1_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2101', zmq_timeout, False, zmq_hwm)
+        self.zeromq_ue1_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2100', zmq_timeout, False, zmq_hwm)
+        self.zeromq_ue2_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2201', zmq_timeout, False, zmq_hwm)
+        self.zeromq_ue2_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2200', zmq_timeout, False, zmq_hwm)
+        self.zeromq_ue3_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2301', zmq_timeout, False, zmq_hwm)
+        self.zeromq_ue3_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2300', zmq_timeout, False, zmq_hwm)
+
+        ##################################################
+        # OFDM TX Blocks
+        ##################################################
         self.digital_ofdm_tx_ue3 = digital.ofdm_tx(
             fft_len=fft_length,
             cp_len=int(0.07*fft_length),
-            packet_length_tag_key='length',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * ue3_prb * 12) / 2), 0)) + list(range(1, int((1 * ue3_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -113,7 +80,7 @@ class multi_ue_scenario(gr.top_block):
         self.digital_ofdm_tx_ue2 = digital.ofdm_tx(
             fft_len=fft_length,
             cp_len=int(0.07*fft_length),
-            packet_length_tag_key='length',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * ue2_prb * 12) / 2), 0)) + list(range(1, int((1 * ue2_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -127,7 +94,7 @@ class multi_ue_scenario(gr.top_block):
         self.digital_ofdm_tx_ue1 = digital.ofdm_tx(
             fft_len=fft_length,
             cp_len=int(0.07*fft_length),
-            packet_length_tag_key='length',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * ue1_prb * 12) / 2), 0)) + list(range(1, int((1 * ue1_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -141,7 +108,7 @@ class multi_ue_scenario(gr.top_block):
         self.digital_ofdm_tx_gnb = digital.ofdm_tx(
             fft_len=fft_length,
             cp_len=int(0.07*fft_length),
-            packet_length_tag_key='length',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * total_prb * 12) / 2), 0)) + list(range(1, int((1 * total_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -152,49 +119,14 @@ class multi_ue_scenario(gr.top_block):
             rolloff=0,
             debug_log=False,
             scramble_bits=False)
-        self.digital_ofdm_rx_gnb = digital.ofdm_rx(
-            fft_len=fft_length, cp_len=int(0.07*fft_length),
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
-            occupied_carriers=[list(range(int((-1 * total_prb * 12) / 2), 0)) + list(range(1, int((1 * total_prb * 12) / 2)))],
-            pilot_carriers=[[ -21, -7, 7, 21 ]],
-            pilot_symbols=[[1, 1, 1, -1]],
-            sync_word1=[0] * fft_length,
-            sync_word2=[1] * fft_length,
-            bps_header=2,
-            bps_payload=2,
-            debug_log=False,
-            scramble_bits=False)
-        self.digital_ofdm_rx_ue5 = digital.ofdm_rx(
-            fft_len=fft_length, cp_len=int(0.07*fft_length),
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
-            occupied_carriers=[list(range(int((-1 * ue5_prb * 12) / 2), 0)) + list(range(1, int((1 * ue5_prb * 12) / 2)))],
-            pilot_carriers=[[ -21, -7, 7, 21 ]],
-            pilot_symbols=[[1, 1, 1, -1]],
-            sync_word1=[0] * fft_length,
-            sync_word2=[1] * fft_length,
-            bps_header=2,
-            bps_payload=2,
-            debug_log=False,
-            scramble_bits=False)
-        self.digital_ofdm_rx_ue4 = digital.ofdm_rx(
-            fft_len=fft_length, cp_len=int(0.07*fft_length),
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
-            occupied_carriers=[list(range(int((-1 * ue4_prb * 12) / 2), 0)) + list(range(1, int((1 * ue4_prb * 12) / 2)))],
-            pilot_carriers=[[ -21, -7, 7, 21 ]],
-            pilot_symbols=[[1, 1, 1, -1]],
-            sync_word1=[0] * fft_length,
-            sync_word2=[1] * fft_length,
-            bps_header=2,
-            bps_payload=2,
-            debug_log=False,
-            scramble_bits=False)
+
+        ##################################################
+        # OFDM RX Blocks
+        ##################################################
         self.digital_ofdm_rx_ue3 = digital.ofdm_rx(
             fft_len=fft_length, cp_len=int(0.07*fft_length),
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
+            frame_length_tag_key='frame_len',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * ue3_prb * 12) / 2), 0)) + list(range(1, int((1 * ue3_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -206,8 +138,8 @@ class multi_ue_scenario(gr.top_block):
             scramble_bits=False)
         self.digital_ofdm_rx_ue2 = digital.ofdm_rx(
             fft_len=fft_length, cp_len=int(0.07*fft_length),
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
+            frame_length_tag_key='frame_len',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * ue2_prb * 12) / 2), 0)) + list(range(1, int((1 * ue2_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -219,8 +151,8 @@ class multi_ue_scenario(gr.top_block):
             scramble_bits=False)
         self.digital_ofdm_rx_ue1 = digital.ofdm_rx(
             fft_len=fft_length, cp_len=int(0.07*fft_length),
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
+            frame_length_tag_key='frame_len',
+            packet_length_tag_key='packet_len',
             occupied_carriers=[list(range(int((-1 * ue1_prb * 12) / 2), 0)) + list(range(1, int((1 * ue1_prb * 12) / 2)))],
             pilot_carriers=[[ -21, -7, 7, 21 ]],
             pilot_symbols=[[1, 1, 1, -1]],
@@ -230,30 +162,46 @@ class multi_ue_scenario(gr.top_block):
             bps_payload=2,
             debug_log=False,
             scramble_bits=False)
-        self.digital_constellation_encoder_gnb = digital.constellation_encoder_bc(constellation_qpsk)
-        self.digital_constellation_encoder_ue5 = digital.constellation_encoder_bc(constellation_qpsk)
-        self.digital_constellation_encoder_ue4 = digital.constellation_encoder_bc(constellation_qpsk)
+        self.digital_ofdm_rx_gnb = digital.ofdm_rx(
+            fft_len=fft_length, cp_len=int(0.07*fft_length),
+            frame_length_tag_key='frame_len',
+            packet_length_tag_key='packet_len',
+            occupied_carriers=[list(range(int((-1 * total_prb * 12) / 2), 0)) + list(range(1, int((1 * total_prb * 12) / 2)))],
+            pilot_carriers=[[ -21, -7, 7, 21 ]],
+            pilot_symbols=[[1, 1, 1, -1]],
+            sync_word1=[0] * fft_length,
+            sync_word2=[1] * fft_length,
+            bps_header=2,
+            bps_payload=2,
+            debug_log=False,
+            scramble_bits=False)
+
+        ##################################################
+        # Constellation Encoder Blocks
+        ##################################################
         self.digital_constellation_encoder_ue3 = digital.constellation_encoder_bc(constellation_qpsk)
         self.digital_constellation_encoder_ue2 = digital.constellation_encoder_bc(constellation_qpsk)
         self.digital_constellation_encoder_ue1 = digital.constellation_encoder_bc(constellation_qpsk)
-        self.digital_constellation_decoder_ue5 = digital.constellation_decoder_cb(constellation_qpsk)
-        self.digital_constellation_decoder_ue4 = digital.constellation_decoder_cb(constellation_qpsk)
+        self.digital_constellation_encoder_gnb = digital.constellation_encoder_bc(constellation_qpsk)
+
+        ##################################################
+        # Constellation Decoder Blocks
+        ##################################################
         self.digital_constellation_decoder_ue3 = digital.constellation_decoder_cb(constellation_qpsk)
         self.digital_constellation_decoder_ue2 = digital.constellation_decoder_cb(constellation_qpsk)
         self.digital_constellation_decoder_ue1 = digital.constellation_decoder_cb(constellation_qpsk)
         self.digital_constellation_decoder_gnb = digital.constellation_decoder_cb(constellation_qpsk)
+
+        ##################################################
+        # Add Block and Pathloss Blocks
+        ##################################################
         self.blocks_ue_tx_to_gnb_rx_add = blocks.add_vcc(1)
-        self.blocks_ue5_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue5_pathloss_db/20.0))
-        self.blocks_ue5_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue5_pathloss_db/20.0))
-        self.blocks_ue4_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue4_pathloss_db/20.0))
-        self.blocks_ue4_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue4_pathloss_db/20.0))
         self.blocks_ue3_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue3_pathloss_db/20.0))
         self.blocks_ue3_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue3_pathloss_db/20.0))
         self.blocks_ue2_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue2_pathloss_db/20.0))
         self.blocks_ue2_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue2_pathloss_db/20.0))
         self.blocks_ue1_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue1_pathloss_db/20.0))
         self.blocks_ue1_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue1_pathloss_db/20.0))
-
 
         ##################################################
         # Connections
@@ -264,46 +212,29 @@ class multi_ue_scenario(gr.top_block):
         self.connect((self.blocks_ue2_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 1))
         self.connect((self.blocks_ue3_rx_pathloss, 0), (self.digital_ofdm_rx_ue3, 0))
         self.connect((self.blocks_ue3_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 2))
-        self.connect((self.blocks_ue4_rx_pathloss, 0), (self.digital_ofdm_rx_ue4, 0))
-        self.connect((self.blocks_ue4_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 3))
-        self.connect((self.blocks_ue5_rx_pathloss, 0), (self.digital_ofdm_rx_ue5, 0))
-        self.connect((self.blocks_ue5_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 4))
         self.connect((self.blocks_ue_tx_to_gnb_rx_add, 0), (self.digital_ofdm_rx_gnb, 0))
         self.connect((self.digital_constellation_decoder_gnb, 0), (self.digital_ofdm_tx_gnb, 0))
         self.connect((self.digital_constellation_decoder_ue1, 0), (self.digital_ofdm_tx_ue1, 0))
         self.connect((self.digital_constellation_decoder_ue2, 0), (self.digital_ofdm_tx_ue2, 0))
         self.connect((self.digital_constellation_decoder_ue3, 0), (self.digital_ofdm_tx_ue3, 0))
-        self.connect((self.digital_constellation_decoder_ue4, 0), (self.digital_ofdm_tx_ue4, 0))
-        self.connect((self.digital_constellation_decoder_ue5, 0), (self.digital_ofdm_tx_ue5, 0))
+        self.connect((self.digital_constellation_encoder_gnb, 0), (self.zeromq_gnb_rx, 0))
         self.connect((self.digital_constellation_encoder_ue1, 0), (self.zeromq_ue1_rx, 0))
         self.connect((self.digital_constellation_encoder_ue2, 0), (self.zeromq_ue2_rx, 0))
         self.connect((self.digital_constellation_encoder_ue3, 0), (self.zeromq_ue3_rx, 0))
-        self.connect((self.digital_constellation_encoder_ue4, 0), (self.zeromq_ue4_rx, 0))
-        self.connect((self.digital_constellation_encoder_ue5, 0), (self.zeromq_ue5_rx, 0))
-        self.connect((self.digital_constellation_encoder_gnb, 0), (self.zeromq_gnb_rx, 0))
+        self.connect((self.digital_ofdm_rx_gnb, 0), (self.digital_constellation_encoder_gnb, 0))
         self.connect((self.digital_ofdm_rx_ue1, 0), (self.digital_constellation_encoder_ue1, 0))
         self.connect((self.digital_ofdm_rx_ue2, 0), (self.digital_constellation_encoder_ue2, 0))
         self.connect((self.digital_ofdm_rx_ue3, 0), (self.digital_constellation_encoder_ue3, 0))
-        self.connect((self.digital_ofdm_rx_ue4, 0), (self.digital_constellation_encoder_ue4, 0))
-        self.connect((self.digital_ofdm_rx_ue5, 0), (self.digital_constellation_encoder_ue5, 0))
-        self.connect((self.digital_ofdm_rx_gnb, 0), (self.digital_constellation_encoder_gnb, 0))
         self.connect((self.digital_ofdm_tx_gnb, 0), (self.blocks_ue1_rx_pathloss, 0))
         self.connect((self.digital_ofdm_tx_gnb, 0), (self.blocks_ue2_rx_pathloss, 0))
         self.connect((self.digital_ofdm_tx_gnb, 0), (self.blocks_ue3_rx_pathloss, 0))
-        self.connect((self.digital_ofdm_tx_gnb, 0), (self.blocks_ue4_rx_pathloss, 0))
-        self.connect((self.digital_ofdm_tx_gnb, 0), (self.blocks_ue5_rx_pathloss, 0))
         self.connect((self.digital_ofdm_tx_ue1, 0), (self.blocks_ue1_tx_pathloss, 0))
         self.connect((self.digital_ofdm_tx_ue2, 0), (self.blocks_ue2_tx_pathloss, 0))
         self.connect((self.digital_ofdm_tx_ue3, 0), (self.blocks_ue3_tx_pathloss, 0))
-        self.connect((self.digital_ofdm_tx_ue4, 0), (self.blocks_ue4_tx_pathloss, 0))
-        self.connect((self.digital_ofdm_tx_ue5, 0), (self.blocks_ue5_tx_pathloss, 0))
         self.connect((self.zeromq_gnb_tx, 0), (self.digital_constellation_decoder_gnb, 0))
         self.connect((self.zeromq_ue1_tx, 0), (self.digital_constellation_decoder_ue1, 0))
         self.connect((self.zeromq_ue2_tx, 0), (self.digital_constellation_decoder_ue2, 0))
         self.connect((self.zeromq_ue3_tx, 0), (self.digital_constellation_decoder_ue3, 0))
-        self.connect((self.zeromq_ue4_tx, 0), (self.digital_constellation_decoder_ue4, 0))
-        self.connect((self.zeromq_ue5_tx, 0), (self.digital_constellation_decoder_ue5, 0))
-    
         # Begin reading UE config file
         self.timer = None
         self.start_periodic_config_read()  
@@ -345,18 +276,9 @@ class multi_ue_scenario(gr.top_block):
         if '2' in config_data:
             self.set_ue2_prb(config_data['2']['prb'])
             self.set_ue2_pathloss_db(config_data['2']['pathloss'])
-
         if '3' in config_data:
             self.set_ue3_prb(config_data['3']['prb'])
             self.set_ue3_pathloss_db(config_data['3']['pathloss'])
-
-        if '4' in config_data:
-            self.set_ue4_prb(config_data['4']['prb'])
-            self.set_ue4_pathloss_db(config_data['4']['pathloss'])
-
-        if '5' in config_data:
-            self.set_ue5_prb(config_data['5']['prb'])
-            self.set_ue5_pathloss_db(config_data['5']['pathloss'])
         pass
 
     ##################################################
@@ -373,63 +295,6 @@ class multi_ue_scenario(gr.top_block):
 
     def set_zmq_hwm(self, zmq_hwm):
         self.zmq_hwm = zmq_hwm
-
-    def get_ue5_prb(self):
-        return self.ue5_prb
-
-    def set_ue5_prb(self, ue5_prb):
-        self.ue5_prb = ue5_prb
-
-    def get_ue5_pathloss_db(self):
-        return self.ue5_pathloss_db
-
-    def set_ue5_pathloss_db(self, ue5_pathloss_db):
-        self.ue5_pathloss_db = ue5_pathloss_db
-        self.blocks_ue5_rx_pathloss.set_k(10**(-1.0*self.ue5_pathloss_db/20.0))
-        self.blocks_ue5_tx_pathloss.set_k(10**(-1.0*self.ue5_pathloss_db/20.0))
-
-    def get_ue4_prb(self):
-        return self.ue4_prb
-
-    def set_ue4_prb(self, ue4_prb):
-        self.ue4_prb = ue4_prb
-
-    def get_ue4_pathloss_db(self):
-        return self.ue4_pathloss_db
-
-    def set_ue4_pathloss_db(self, ue4_pathloss_db):
-        self.ue4_pathloss_db = ue4_pathloss_db
-        self.blocks_ue4_rx_pathloss.set_k(10**(-1.0*self.ue4_pathloss_db/20.0))
-        self.blocks_ue4_tx_pathloss.set_k(10**(-1.0*self.ue4_pathloss_db/20.0))
-
-    def get_ue3_prb(self):
-        return self.ue3_prb
-
-    def set_ue3_prb(self, ue3_prb):
-        self.ue3_prb = ue3_prb
-
-    def get_ue3_pathloss_db(self):
-        return self.ue3_pathloss_db
-
-    def set_ue3_pathloss_db(self, ue3_pathloss_db):
-        self.ue3_pathloss_db = ue3_pathloss_db
-        self.blocks_ue3_rx_pathloss.set_k(10**(-1.0*self.ue3_pathloss_db/20.0))
-        self.blocks_ue3_tx_pathloss.set_k(10**(-1.0*self.ue3_pathloss_db/20.0))
-
-    def get_ue2_prb(self):
-        return self.ue2_prb
-
-    def set_ue2_prb(self, ue2_prb):
-        self.ue2_prb = ue2_prb
-
-    def get_ue2_pathloss_db(self):
-        return self.ue2_pathloss_db
-
-    def set_ue2_pathloss_db(self, ue2_pathloss_db):
-        self.ue2_pathloss_db = ue2_pathloss_db
-        self.blocks_ue2_rx_pathloss.set_k(10**(-1.0*self.ue2_pathloss_db/20.0))
-        self.blocks_ue2_tx_pathloss.set_k(10**(-1.0*self.ue2_pathloss_db/20.0))
-
     def get_ue1_prb(self):
         return self.ue1_prb
 
@@ -443,7 +308,32 @@ class multi_ue_scenario(gr.top_block):
         self.ue1_pathloss_db = ue1_pathloss_db
         self.blocks_ue1_rx_pathloss.set_k(10**(-1.0*self.ue1_pathloss_db/20.0))
         self.blocks_ue1_tx_pathloss.set_k(10**(-1.0*self.ue1_pathloss_db/20.0))
+    def get_ue2_prb(self):
+        return self.ue2_prb
 
+    def set_ue2_prb(self, ue2_prb):
+        self.ue2_prb = ue2_prb
+
+    def get_ue2_pathloss_db(self):
+        return self.ue2_pathloss_db
+
+    def set_ue2_pathloss_db(self, ue2_pathloss_db):
+        self.ue2_pathloss_db = ue2_pathloss_db
+        self.blocks_ue2_rx_pathloss.set_k(10**(-1.0*self.ue2_pathloss_db/20.0))
+        self.blocks_ue2_tx_pathloss.set_k(10**(-1.0*self.ue2_pathloss_db/20.0))
+    def get_ue3_prb(self):
+        return self.ue3_prb
+
+    def set_ue3_prb(self, ue3_prb):
+        self.ue3_prb = ue3_prb
+
+    def get_ue3_pathloss_db(self):
+        return self.ue3_pathloss_db
+
+    def set_ue3_pathloss_db(self, ue3_pathloss_db):
+        self.ue3_pathloss_db = ue3_pathloss_db
+        self.blocks_ue3_rx_pathloss.set_k(10**(-1.0*self.ue3_pathloss_db/20.0))
+        self.blocks_ue3_tx_pathloss.set_k(10**(-1.0*self.ue3_pathloss_db/20.0))
     def get_total_prb(self):
         return self.total_prb
 

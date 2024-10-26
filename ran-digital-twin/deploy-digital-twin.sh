@@ -180,7 +180,7 @@ gnome-terminal --tab --title="GNU Radio" -- bash -c "
 "
 
 # Wait for user to click Play in GNU Radio
-echo "Launch GNU Radio and ensure QPSK modulation has started..."
+echo "Launch GNU Radio and ensure modulation has started..."
 echo "Press Enter once GNU Radio is running and all UEs have connected to Open5GS."
 read -r
 
