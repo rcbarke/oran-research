@@ -31,7 +31,8 @@ The build scripts will automatically install and configure all necessary depende
 │   ├── srsgnb.sh                       # Builds srsRAN gNB config: Currently supports single gNB @ Core
 |   ├── srsue.sh                        # Builds srsUE configs and synchronizes with Open5GS database
 |   ├── gnuradio.sh                     # Builds and configures gnuradio
-|   └── generate_multi_ue_py.sh         # Builds dynamic gnuradio python files
+|   ├── generate_multi_ue_py.sh         # Builds dynamic gnuradio python file
+|   └── generate_ue_config_json.sh      # Builds pathloss and PRB config file
 ├── configs/                            # Configuration files for RAN and UE components
 ├── oran-sc-ric/                        # Source files and builds for OSC RIC (added after build)
 ├── srsRAN_4G/                          # Source files and builds for srsRAN 4G UE (added after build)
@@ -198,6 +199,14 @@ This script generates the config file for gnuradio modulation for a dynamic amou
 
 This will generate .grc file for 30 UEs, modulating their RF signal processing dynamically.
 
+---
+
+### generate_multi_ue_py.sh
+
+This script generates the json config file for the gnuradio modulation. It allows for UE pathloss and PRB values and to be updated during simulation by writing new values into this file. The modulation script reads from this file every 300ms, locking the file while it is reading. 
+
+---
+
 ### Configuration Files (`configs/`)
 
 Staged to `./srsRAN_Project/docker/open5gs` with `./open5gs.env`:
@@ -211,9 +220,11 @@ Staged to `./srsRAN_4G/build/srsue/src` with  `./srsue` executable:
 
 The **`srsue.sh`**: script will create individual configuration files for each UE (ueX_zmq.conf) based on this template and the data from subscriber_db.csv.
 
-- **`multi_ue_scenario.grc`**: Configuration file for gnuradio to modulate all UEs. Start gnuradio from `./srsRAN_4G/build/srsue/src` with:
+- **`multi_ue_scenario.py`**: gnuradio script to modulate all UEs. Start gnuradio from `./srsRAN_4G/build/srsue/src` with:
 
-`gnuradio-companion ./multi_ue_scenario.grc`
+`sudo ./multi_ue_scenario.py`
+
+- **`ue_config.json`**: Companion json for setting PRBs and pathloss during gnuradio modulation. Automatically stages to the same directory as multi\_ue_scenario.py.
 
 ## Build Process
 
