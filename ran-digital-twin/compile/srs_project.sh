@@ -34,6 +34,16 @@ build_srsran_project() {
     cmake ../ -DENABLE_EXPORT=ON -DENABLE_ZEROMQ=ON
     make -j`nproc`
     cd ../../
+    
+    # Change Grafana default port
+    cd ./srsRAN_Project
+    FILES_TO_UPDATE="$(git grep -l "3300:")"
+    if [ -n "$FILES_TO_UPDATE" ]; then  
+       echo "$FILES_TO_UPDATE" | xargs sed -i "s/3300:/10300:/g"
+       echo "Modified Grafana Port to 10300..."
+    fi;
+    cd ..
 }
 
 build_srsran_project
+

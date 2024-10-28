@@ -65,6 +65,6 @@ sleep 10
 
 # Launch Firefox to open Grafana dashboard
 echo "Opening Grafana in Firefox at http://localhost:3300"
-firefox http://localhost:3300 &
+firefox http://localhost:10300 &
 
 echo "Monitoring xApps have been launched in separate terminals."
