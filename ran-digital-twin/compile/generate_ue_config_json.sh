@@ -45,8 +45,8 @@ for ((i=1; i<=NUM_UES; i++)); do
         cat <<EOL >> "$OUTPUT_FILE"
     {
         "id": $i,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     }
 EOL
     else
@@ -54,8 +54,8 @@ EOL
         cat <<EOL >> "$OUTPUT_FILE"
     {
         "id": $i,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
 EOL
     fi

@@ -1,152 +1,77 @@
 [
     {
         "id": 1,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 2,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 3,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 4,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 5,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 6,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 7,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 8,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 9,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 10,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 11,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 12,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 13,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 14,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     },
     {
         "id": 15,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 16,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 17,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 18,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 19,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 20,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 21,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 22,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 23,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 24,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 25,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 26,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 27,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 28,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 29,
-        "prb": 26,
-        "pathloss": 20
-    },
-    {
-        "id": 30,
-        "prb": 26,
-        "pathloss": 20
+        "prb": 52,
+        "pathloss": 0
     }
 ]
