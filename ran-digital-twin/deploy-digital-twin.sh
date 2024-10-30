@@ -213,7 +213,7 @@ else
     # If the response is 'y', run the monitoring-xApps.sh script
     if [[ "$response" == "y" ]]; then
         echo "Starting xApps... KPIMon = RIC Monitoring, Grafana = RAN Monitoring..."
-        ./monitoring-xApps.sh
+        ./monitoring-xApps.sh $num_ues
     else
         echo "Skipping monitoring xApps."
     fi
