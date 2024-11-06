@@ -13,32 +13,42 @@
 build_srsran_4G() {
     echo "srsRAN 4G build initiated..."
     
-    # Check if the srsRAN_4G directory exists and if it's not empty
-    if [ -d "./srsRAN_4G" ] && [ "$(ls -A ./srsRAN_4G)" ]; then
-        echo "srsRAN 4G directory already exists and is not empty. Skipping clone."
-        cd srsRAN_4G/build
-        cmake ../
-    else
-        # If the directory does not exist or is empty, proceed with cloning
-        if [ -d "./srsRAN_4G" ]; then
-            echo "srsRAN 4G directory exists but is empty. Proceeding with clone."
-            rm -rf ./srsRAN_4G  # Clean up the empty directory
+    # Check if the srsRAN_4G directory exists
+    if [ -d "./srsRAN_4G" ]; then
+        echo "srsRAN 4G directory exists."
+        
+        # Check if the build directory exists and is not empty
+        if [ -d "./srsRAN_4G/build" ] && [ "$(ls -A ./srsRAN_4G/build)" ]; then
+            echo "Build directory already exists and is not empty. Skipping build."
+            return
+        else
+            echo "Build directory does not exist or is empty. Proceeding with build setup."
+            cd srsRAN_4G
+            [ ! -d "build" ] && mkdir build  # Create build directory if it doesn't exist
+            cd build
         fi
+    else
+        # If the srsRAN_4G directory does not exist, proceed with cloning
         echo "Cloning srsRAN_4G..."
         git clone https://github.com/srsRAN/srsRAN_4G.git
+    
+        # Implement random preamble timer
+        python3 ./compile/modify_proc_ra_nr.py
+        
+        # Change directories
         cd srsRAN_4G
         mkdir build
         cd build
-        
-        # Compile and build srsRAN_4G
-        cmake ../
-        make 
-        make test
-        
-        # Install srsRAN_4G
-        sudo make install
-        srsran_install_configs.sh user
     fi
+    
+    # Compile and build srsRAN_4G
+    cmake ../
+    make 
+    make test
+    
+    # Install srsRAN_4G
+    sudo make install
+    srsran_install_configs.sh user
 }
 
 build_srsran_4G

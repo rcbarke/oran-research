@@ -90,7 +90,7 @@ cat <<EOL >> "$OUTPUT_FILE"
         ##################################################
         # Variables
         ##################################################
-        self.zmq_timeout = zmq_timeout = 100
+        self.zmq_timeout = zmq_timeout = 1000
         self.zmq_hwm = zmq_hwm = -1
 EOL
 
@@ -104,7 +104,7 @@ done
 
 # Append the remaining static variables
 cat <<EOL >> "$OUTPUT_FILE"
-        self.samp_rate = samp_rate = 9360000
+        self.samp_rate = samp_rate = 11520000
         self.gnb_slow_down_ratio = gnb_slow_down_ratio = 1
 EOL
 

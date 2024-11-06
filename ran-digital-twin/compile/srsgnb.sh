@@ -36,6 +36,7 @@ RIC_PORT=36421
 
 # Path to the gnb_zmq.yaml configuration file
 CONFIG_FILE="./configs/gnb_zmq.yaml"
+METRICS_FILE="./configs/get_gnb_metrics.py"
 
 # Ensure the config file exists
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -51,5 +52,6 @@ sed -i "/^e2:/,/^ *[^ ]/s|^ *port:.*|  port: $RIC_PORT|g" $CONFIG_FILE
 
 echo "Successfully updated the 'e2' section in $CONFIG_FILE with RIC_RMR=$RIC_RMR, RIC_E2=$RIC_E2, and RIC_PORT=$RIC_PORT."
 
-echo "Staging $CONFIG_FILE into ./srsRAN_Project/build/apps/gnb/..."
-cp $CONFIG_FILE "./srsRAN_Project/build/apps/gnb/gnb_zmq.yaml"
+echo "Staging $CONFIG_FILE and $METRICS_FILE into ./srsRAN_Project/build/apps/gnb/..."
+cp $CONFIG_FILE $METRICS_FILE "./srsRAN_Project/build/apps/gnb/"
+echo "gNB config files successfully staged"

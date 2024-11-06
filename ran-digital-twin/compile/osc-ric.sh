@@ -85,6 +85,10 @@ if [ -d "./oran-sc-ric" ]; then
     
     # Return to the previous directory
     cd ..
+    
+    echo "Staging Clemson xApps into RIC..."
+    cp -r ./cu_xApps/* ./oran-sc-ric/xApps/python/
+    echo "Clemson xApps successfully staged"
 else
     echo "Error: OSC RIC repository not found after clone attempt."
     exit 1

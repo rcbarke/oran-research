@@ -44,7 +44,7 @@ fi
 gnome-terminal --title="KPIMon" -- bash -c "
     cd ./oran-sc-ric &&
     echo 'Starting KPIMon for $NUM_UEs UEs...' &&
-    sudo docker compose exec python_xapp_runner ./kpm_mon_xapp.py --metrics=DRB.UEThpDl,DRB.UEThpUl --kpm_report_style=5 --ue_ids=$UE_STR --refresh_rate=125;
+    sudo docker compose exec python_xapp_runner ./cu_kpm_mon_xapp.py --metrics=DRB.UEThpDl,DRB.UEThpUl --kpm_report_style=5 --ue_ids=$UE_STR --refresh_rate=125;
     exec bash
 "
 

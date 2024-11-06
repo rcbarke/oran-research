@@ -5,6 +5,8 @@
 
 # Updated AMF config format for VNF gNB
 cu_cp:
+  max_nof_ues: 25                         # Optional UINT. Maximum number of UEs that the CU-CP may accept.
+  max_nof_drbs_per_ue: 29                 # Optional UINT. Maximum number of DRBs per UE. Supported: [1 - 29].
   amf:
     addr: 10.53.1.2
     port: 38412
@@ -15,13 +17,16 @@ cu_cp:
           - plmn: "00101"
             tai_slice_support_list:
               - sst: 1
+  rrc:
+    force_reestablishment_fallback: true    # Optional BOOLEAN (false). Force RRC re-establishment fallback to RRC setup. Supported: [false, true].
+    rrc_procedure_timeout_ms: 3000          # Optional UINT (720). Sets the timeout in ms used for RRC message exchange with UE. It needs to suit the expected communication delay and account for potential retransmissions UE processing delays, SR delays, etc. Supported: [0 - inf].
               
 ru_sdr:
   device_driver: zmq                # The RF driver name.
   device_args: tx_port=tcp://127.0.0.1:2000,rx_port=tcp://127.0.0.1:2001,base_srate=11.52e6 # Optionally pass arguments to the selected RF driver.
   srate: 11.52                      # RF sample rate might need to be adjusted according to selected bandwidth.
-  tx_gain: 75                       # Transmit gain of the RF might need to adjusted to the given situation.
-  rx_gain: 75                       # Receive gain of the RF might need to adjusted to the given situation.
+  tx_gain: 65                       # Transmit gain of the RF might need to adjusted to the given situation.
+  rx_gain: 65                       # Receive gain of the RF might need to adjusted to the given situation.
 
 cell_cfg:
   dl_arfcn: 368500                  # ARFCN of the downlink carrier (center frequency).
@@ -41,10 +46,11 @@ cell_cfg:
     prach_config_index: 1           # Sets PRACH config to match what is expected by srsUE
     total_nof_ra_preambles: 64      # Sets number of available PRACH preambles
     nof_ssb_per_ro: 1               # Sets the number of SSBs per RACH occasion.
-    nof_cb_preambles_per_ssb: 64    # Sets the number of contention based preambles per SSB.
+    nof_cb_preambles_per_ssb: 32    # Sets the number of contention based preambles per SSB.
+    preamble_trans_max: 10         # Optional UINT (7). Sets the max number of RA preamble transmissions performed before declaring a failure. Supported: [3, 4, 5, 6, 7, 8, 10, 20, 50, 100, 200].
 
 cu_cp:
-  inactivity_timer: 7200            # Sets the UE/PDU Session/DRB inactivity timer to 7200 seconds. Supported: [1 - 7200].
+  inactivity_timer: 300            # Sets the UE/PDU Session/DRB inactivity timer to 7200 seconds. Supported: [1 - 7200].
 
 log:
   filename: /tmp/gnb.log            # Path of the log file.
