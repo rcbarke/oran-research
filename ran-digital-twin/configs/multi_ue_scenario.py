@@ -36,12 +36,6 @@ class multi_ue_scenario(gr.top_block):
         ##################################################
         self.zmq_timeout = zmq_timeout = 1000
         self.zmq_hwm = zmq_hwm = -1
-        self.ue15_slow_down_ratio = ue15_slow_down_ratio = 1
-        self.ue15_path_loss_db = ue15_path_loss_db = 0
-        self.ue14_slow_down_ratio = ue14_slow_down_ratio = 1
-        self.ue14_path_loss_db = ue14_path_loss_db = 0
-        self.ue13_slow_down_ratio = ue13_slow_down_ratio = 1
-        self.ue13_path_loss_db = ue13_path_loss_db = 0
         self.ue12_slow_down_ratio = ue12_slow_down_ratio = 1
         self.ue12_path_loss_db = ue12_path_loss_db = 0
         self.ue11_slow_down_ratio = ue11_slow_down_ratio = 1
@@ -72,12 +66,6 @@ class multi_ue_scenario(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.zeromq_ue15_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3501', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue15_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3500', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue14_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3401', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue14_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3400', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue13_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3301', zmq_timeout, False, zmq_hwm)
-        self.zeromq_ue13_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3300', zmq_timeout, False, zmq_hwm)
         self.zeromq_ue12_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3201', zmq_timeout, False, zmq_hwm)
         self.zeromq_ue12_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3200', zmq_timeout, False, zmq_hwm)
         self.zeromq_ue11_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:3101', zmq_timeout, False, zmq_hwm)
@@ -105,12 +93,6 @@ class multi_ue_scenario(gr.top_block):
         self.zeromq_gnb_tx = zeromq.req_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2000', zmq_timeout, False, zmq_hwm)
         self.zeromq_gnb_rx = zeromq.rep_sink(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:2001', zmq_timeout, False, zmq_hwm)
         self.blocks_ue_tx_to_gnb_rx_add = blocks.add_vcc(1)
-        self.blocks_ue15_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue15_path_loss_db/20.0))
-        self.blocks_ue15_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue15_path_loss_db/20.0))
-        self.blocks_ue14_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue14_path_loss_db/20.0))
-        self.blocks_ue14_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue14_path_loss_db/20.0))
-        self.blocks_ue13_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue13_path_loss_db/20.0))
-        self.blocks_ue13_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue13_path_loss_db/20.0))
         self.blocks_ue12_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue12_path_loss_db/20.0))
         self.blocks_ue12_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue12_path_loss_db/20.0))
         self.blocks_ue11_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue11_path_loss_db/20.0))
@@ -135,12 +117,6 @@ class multi_ue_scenario(gr.top_block):
         self.blocks_ue2_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue2_path_loss_db/20.0))
         self.blocks_ue1_tx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue1_path_loss_db/20.0))
         self.blocks_ue1_rx_pathloss = blocks.multiply_const_cc(10**(-1.0*ue1_path_loss_db/20.0))
-        self.blocks_throttle_ue15_tx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue15_slow_down_ratio),True)
-        self.blocks_throttle_ue15_rx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue15_slow_down_ratio),True)
-        self.blocks_throttle_ue14_tx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue14_slow_down_ratio),True)
-        self.blocks_throttle_ue14_rx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue14_slow_down_ratio),True)
-        self.blocks_throttle_ue13_tx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue13_slow_down_ratio),True)
-        self.blocks_throttle_ue13_rx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue13_slow_down_ratio),True)
         self.blocks_throttle_ue12_tx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue12_slow_down_ratio),True)
         self.blocks_throttle_ue12_rx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue12_slow_down_ratio),True)
         self.blocks_throttle_ue11_tx = blocks.throttle(gr.sizeof_gr_complex*1, 1.0*samp_rate/(1.0*ue11_slow_down_ratio),True)
@@ -184,9 +160,6 @@ class multi_ue_scenario(gr.top_block):
         self.connect((self.blocks_throttle_gnb_tx, 0), (self.blocks_ue10_rx_pathloss, 0))
         self.connect((self.blocks_throttle_gnb_tx, 0), (self.blocks_ue11_rx_pathloss, 0))
         self.connect((self.blocks_throttle_gnb_tx, 0), (self.blocks_ue12_rx_pathloss, 0))
-        self.connect((self.blocks_throttle_gnb_tx, 0), (self.blocks_ue13_rx_pathloss, 0))
-        self.connect((self.blocks_throttle_gnb_tx, 0), (self.blocks_ue14_rx_pathloss, 0))
-        self.connect((self.blocks_throttle_gnb_tx, 0), (self.blocks_ue15_rx_pathloss, 0))
         self.connect((self.blocks_throttle_ue1_rx, 0), (self.zeromq_ue1_rx, 0))
         self.connect((self.blocks_throttle_ue1_tx, 0), (self.blocks_ue1_tx_pathloss, 0))
         self.connect((self.blocks_throttle_ue2_rx, 0), (self.zeromq_ue2_rx, 0))
@@ -211,12 +184,6 @@ class multi_ue_scenario(gr.top_block):
         self.connect((self.blocks_throttle_ue11_tx, 0), (self.blocks_ue11_tx_pathloss, 0))
         self.connect((self.blocks_throttle_ue12_rx, 0), (self.zeromq_ue12_rx, 0))
         self.connect((self.blocks_throttle_ue12_tx, 0), (self.blocks_ue12_tx_pathloss, 0))
-        self.connect((self.blocks_throttle_ue13_rx, 0), (self.zeromq_ue13_rx, 0))
-        self.connect((self.blocks_throttle_ue13_tx, 0), (self.blocks_ue13_tx_pathloss, 0))
-        self.connect((self.blocks_throttle_ue14_rx, 0), (self.zeromq_ue14_rx, 0))
-        self.connect((self.blocks_throttle_ue14_tx, 0), (self.blocks_ue14_tx_pathloss, 0))
-        self.connect((self.blocks_throttle_ue15_rx, 0), (self.zeromq_ue15_rx, 0))
-        self.connect((self.blocks_throttle_ue15_tx, 0), (self.blocks_ue15_tx_pathloss, 0))
         self.connect((self.blocks_ue1_rx_pathloss, 0), (self.blocks_throttle_ue1_rx, 0))
         self.connect((self.blocks_ue1_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 0))
         self.connect((self.blocks_ue2_rx_pathloss, 0), (self.blocks_throttle_ue2_rx, 0))
@@ -241,12 +208,6 @@ class multi_ue_scenario(gr.top_block):
         self.connect((self.blocks_ue11_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 10))
         self.connect((self.blocks_ue12_rx_pathloss, 0), (self.blocks_throttle_ue12_rx, 0))
         self.connect((self.blocks_ue12_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 11))
-        self.connect((self.blocks_ue13_rx_pathloss, 0), (self.blocks_throttle_ue13_rx, 0))
-        self.connect((self.blocks_ue13_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 12))
-        self.connect((self.blocks_ue14_rx_pathloss, 0), (self.blocks_throttle_ue14_rx, 0))
-        self.connect((self.blocks_ue14_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 13))
-        self.connect((self.blocks_ue15_rx_pathloss, 0), (self.blocks_throttle_ue15_rx, 0))
-        self.connect((self.blocks_ue15_tx_pathloss, 0), (self.blocks_ue_tx_to_gnb_rx_add, 14))
         self.connect((self.blocks_ue_tx_to_gnb_rx_add, 0), (self.blocks_throttle_gnb_rx, 0))
         self.connect((self.zeromq_gnb_tx, 0), (self.blocks_throttle_gnb_tx, 0))
         self.connect((self.zeromq_ue1_tx, 0), (self.blocks_throttle_ue1_tx, 0))
@@ -261,9 +222,6 @@ class multi_ue_scenario(gr.top_block):
         self.connect((self.zeromq_ue10_tx, 0), (self.blocks_throttle_ue10_tx, 0))
         self.connect((self.zeromq_ue11_tx, 0), (self.blocks_throttle_ue11_tx, 0))
         self.connect((self.zeromq_ue12_tx, 0), (self.blocks_throttle_ue12_tx, 0))
-        self.connect((self.zeromq_ue13_tx, 0), (self.blocks_throttle_ue13_tx, 0))
-        self.connect((self.zeromq_ue14_tx, 0), (self.blocks_throttle_ue14_tx, 0))
-        self.connect((self.zeromq_ue15_tx, 0), (self.blocks_throttle_ue15_tx, 0))
 
         # Begin reading UE config file
         self.timer = None
@@ -352,18 +310,6 @@ class multi_ue_scenario(gr.top_block):
                 self.set_ue12_slow_down_ratio(total_prb / prb)
                 self.set_ue12_path_loss_db(pathloss)
                 #print(f"UE12 - PRB: {prb}, Pathloss: {pathloss} dB")
-            if ue_id == 13:
-                self.set_ue13_slow_down_ratio(total_prb / prb)
-                self.set_ue13_path_loss_db(pathloss)
-                #print(f"UE13 - PRB: {prb}, Pathloss: {pathloss} dB")
-            if ue_id == 14:
-                self.set_ue14_slow_down_ratio(total_prb / prb)
-                self.set_ue14_path_loss_db(pathloss)
-                #print(f"UE14 - PRB: {prb}, Pathloss: {pathloss} dB")
-            if ue_id == 15:
-                self.set_ue15_slow_down_ratio(total_prb / prb)
-                self.set_ue15_path_loss_db(pathloss)
-                #print(f"UE15 - PRB: {prb}, Pathloss: {pathloss} dB")
 
     ##################################################
     # Variable Setter Methods
@@ -572,54 +518,6 @@ class multi_ue_scenario(gr.top_block):
         self.blocks_ue12_rx_pathloss.set_k(10**(-1.0*self.ue12_path_loss_db/20.0))
         self.blocks_ue12_tx_pathloss.set_k(10**(-1.0*self.ue12_path_loss_db/20.0))
 
-    def get_ue13_slow_down_ratio(self):
-        return self.ue13_slow_down_ratio
-
-    def set_ue13_slow_down_ratio(self, ue13_slow_down_ratio):
-        self.ue13_slow_down_ratio = ue13_slow_down_ratio
-        self.blocks_throttle_ue13_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue13_slow_down_ratio))
-        self.blocks_throttle_ue13_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue13_slow_down_ratio))
-
-    def get_ue13_path_loss_db(self):
-        return self.ue13_path_loss_db
-
-    def set_ue13_path_loss_db(self, ue13_path_loss_db):
-        self.ue13_path_loss_db = ue13_path_loss_db
-        self.blocks_ue13_rx_pathloss.set_k(10**(-1.0*self.ue13_path_loss_db/20.0))
-        self.blocks_ue13_tx_pathloss.set_k(10**(-1.0*self.ue13_path_loss_db/20.0))
-
-    def get_ue14_slow_down_ratio(self):
-        return self.ue14_slow_down_ratio
-
-    def set_ue14_slow_down_ratio(self, ue14_slow_down_ratio):
-        self.ue14_slow_down_ratio = ue14_slow_down_ratio
-        self.blocks_throttle_ue14_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue14_slow_down_ratio))
-        self.blocks_throttle_ue14_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue14_slow_down_ratio))
-
-    def get_ue14_path_loss_db(self):
-        return self.ue14_path_loss_db
-
-    def set_ue14_path_loss_db(self, ue14_path_loss_db):
-        self.ue14_path_loss_db = ue14_path_loss_db
-        self.blocks_ue14_rx_pathloss.set_k(10**(-1.0*self.ue14_path_loss_db/20.0))
-        self.blocks_ue14_tx_pathloss.set_k(10**(-1.0*self.ue14_path_loss_db/20.0))
-
-    def get_ue15_slow_down_ratio(self):
-        return self.ue15_slow_down_ratio
-
-    def set_ue15_slow_down_ratio(self, ue15_slow_down_ratio):
-        self.ue15_slow_down_ratio = ue15_slow_down_ratio
-        self.blocks_throttle_ue15_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue15_slow_down_ratio))
-        self.blocks_throttle_ue15_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue15_slow_down_ratio))
-
-    def get_ue15_path_loss_db(self):
-        return self.ue15_path_loss_db
-
-    def set_ue15_path_loss_db(self, ue15_path_loss_db):
-        self.ue15_path_loss_db = ue15_path_loss_db
-        self.blocks_ue15_rx_pathloss.set_k(10**(-1.0*self.ue15_path_loss_db/20.0))
-        self.blocks_ue15_tx_pathloss.set_k(10**(-1.0*self.ue15_path_loss_db/20.0))
-
     def get_samp_rate(self):
         return self.samp_rate
 
@@ -651,12 +549,6 @@ class multi_ue_scenario(gr.top_block):
         self.blocks_throttle_ue11_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue11_slow_down_ratio))
         self.blocks_throttle_ue12_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue12_slow_down_ratio))
         self.blocks_throttle_ue12_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue12_slow_down_ratio))
-        self.blocks_throttle_ue13_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue13_slow_down_ratio))
-        self.blocks_throttle_ue13_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue13_slow_down_ratio))
-        self.blocks_throttle_ue14_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue14_slow_down_ratio))
-        self.blocks_throttle_ue14_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue14_slow_down_ratio))
-        self.blocks_throttle_ue15_rx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue15_slow_down_ratio))
-        self.blocks_throttle_ue15_tx.set_sample_rate(1.0*self.samp_rate/(1.0*self.ue15_slow_down_ratio))
 
     def get_gnb_slow_down_ratio(self):
         return self.gnb_slow_down_ratio

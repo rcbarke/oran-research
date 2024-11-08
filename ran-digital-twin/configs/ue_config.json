@@ -58,20 +58,5 @@
         "id": 12,
         "prb": 52,
         "pathloss": 0
-    },
-    {
-        "id": 13,
-        "prb": 52,
-        "pathloss": 0
-    },
-    {
-        "id": 14,
-        "prb": 52,
-        "pathloss": 0
-    },
-    {
-        "id": 15,
-        "prb": 52,
-        "pathloss": 0
     }
 ]
