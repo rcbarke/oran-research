@@ -59,8 +59,8 @@ gnome-terminal --tab --title="Grafana Metrics Server" -- bash -c "
     exec bash
 " 2>/dev/null
 
-# Sleep for 10 seconds to give Grafana time to start
-echo "Waiting 10 seconds for Grafana to start..."
+# Sleep for 5 seconds to give Grafana time to start
+echo "Waiting 5 seconds for Grafana to start..."
 sleep 10
 
 # Launch Firefox to open Grafana dashboard

@@ -249,7 +249,7 @@ else
         echo "Starting xApp..."
         ./cu_xApps/launch-prb-xApp.sh
         
-        read -p "Would you like to start the resource management xApp? [Y/n]: " response
+        read -p "Would you like to start the dynamic DRL PRB allocation? [Y/n]: " response
         
         # Default to 'y' if no response is provided
         response=${response:-y}
@@ -269,7 +269,7 @@ else
             echo "Skipping deep reinforcement learning algorithm."
         fi
     else
-        echo "Skipping resource management xApps."
+        echo "Skipping resource management xApp & DRL algorithm."
     fi
 fi
 
