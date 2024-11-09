@@ -35,6 +35,10 @@ build_srsran_4G() {
         # Implement random preamble timer
         python3 ./compile/modify_proc_ra_nr.py
         
+        # Patch nas_5g network slicing bug      
+        # See https://github.com/srsran/srsRAN_4G/pull/1214/commits/427f1550c4a049835177242fc26fbdd2180e4159  
+        python3 ./compile/modify_nas_5g.py
+        
         # Change directories
         cd srsRAN_4G
         mkdir build
@@ -43,7 +47,7 @@ build_srsran_4G() {
     
     # Compile and build srsRAN_4G
     cmake ../
-    make 
+    make -j$(nproc)
     make test
     
     # Install srsRAN_4G

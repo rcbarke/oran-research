@@ -290,6 +290,38 @@ configure_static_ip() {
     echo "Static IP configuration completed successfully."
 }
 
+# Function to execute specific commands without sudo
+add_sudoers_permissions() {
+    # Define the permissions to add
+    local permissions=(
+        "%admin ALL=(ALL) NOPASSWD: /usr/bin/iperf"
+        "%control ALL=(ALL) NOPASSWD: /usr/bin/iperf"
+        "%sudo ALL=(ALL) NOPASSWD: /usr/bin/iperf"
+        "%admin ALL=(ALL) NOPASSWD: /usr/bin/docker *"
+        "%control ALL=(ALL) NOPASSWD: /usr/bin/docker *"
+        "%sudo ALL=(ALL) NOPASSWD: /usr/bin/docker *"
+    )
+
+    # Path to the sudoers file
+    local sudoers_file="/etc/sudoers"
+
+    # Backup the current sudoers file
+    sudo cp "$sudoers_file" "${sudoers_file}.bak"
+
+    # Iterate over each permission and check if it exists in sudoers
+    for permission in "${permissions[@]}"; do
+        if ! sudo grep -qxF "$permission" "$sudoers_file"; then
+            # Add the permission if it's not already in sudoers
+            echo "Adding permission: $permission"
+            echo "$permission" | sudo tee -a "$sudoers_file" > /dev/null
+        else
+            echo "Permission already present: $permission"
+        fi
+    done
+
+    echo "Permissions have been updated in $sudoers_file."
+}
+
 # Function to build dependencies based on the provided component
 build_dependencies() {
     component=$1
@@ -352,6 +384,11 @@ sudo apt-get update
             echo "Building dependencies for Grafana xApp: Performance metric monitoring at gNB..."
             # Insert the commands to build dependencies for Grafana
             ;;
+        "DRL")
+            echo "Building dependencies for Deep RL PRB allocation xApp..."
+            pip install numpy torch wandb stable-baselines3 tqdm gymnasium
+            pip install numpy==1.26.4
+            ;;
         *)
             echo "Error: Invalid component '$component'. Please specify a valid component."
             echo "Valid components are: open5gs, osc-ric, srsgnb, srsue, gnuradio, kpimon, grafana."
@@ -407,8 +444,12 @@ build_component() {
             echo "Built with osc-ric"
             ;;
         "grafana")
-            echo "Building dependencies for Grafana xApp: Performance metric monitoring at gNB..."
+            echo "Building component for Grafana xApp: Performance metric monitoring at gNB..."
             echo "Built with srsProject"
+            ;;
+        "DRL")
+            echo "Building component for Deep RL PRB allocation xApp..."
+            echo "Pre-installed in repository"
             ;;
         *)
             echo "Error: Invalid component '$component'. Please specify a valid component."
@@ -474,6 +515,9 @@ check_ip_availability
 # Configure the static IP
 configure_static_ip
 
+# Adjust sudo permissions for iPerf and Docker
+add_sudoers_permissions
+
 # Output the selected mode and host IP
 echo ""
 echo ""
@@ -538,6 +582,12 @@ if [ "$MODE" = "core" ]; then
    build_dependencies "${app}"
    echo ""
    build_component "${app}"  
+   
+   # DRL
+   app="DRL" 
+   echo "----- ${app} -----"
+   build_dependencies "${app}"
+   echo ""
 else
    # Edge RAN
    echo "Edge RAN: Currently unsupported..."

@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "min_prb": 5,
+        "max_prb": 5,
+        "ded_prb": 5,
+        "pathloss": 86.09617537778463
+    },
+    {
+        "id": 2,
+        "min_prb": 5,
+        "max_prb": 5,
+        "ded_prb": 5,
+        "pathloss": 85.4465128383397
+    },
+    {
+        "id": 3,
+        "min_prb": 5,
+        "max_prb": 5,
+        "ded_prb": 5,
+        "pathloss": 87.38301776074877
+    },
+    {
+        "id": 4,
+        "min_prb": 5,
+        "max_prb": 5,
+        "ded_prb": 5,
+        "pathloss": 93.01853528801514
+    },
+    {
+        "id": 5,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 96.77781450955693
+    },
+    {
+        "id": 6,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 95.3398947019292
+    },
+    {
+        "id": 7,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 86.82628921133359
+    },
+    {
+        "id": 8,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 92.46204589019482
+    },
+    {
+        "id": 9,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 86.20340264268391
+    },
+    {
+        "id": 10,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 89.26890365351025
+    },
+    {
+        "id": 11,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 93.8444779932363
+    },
+    {
+        "id": 12,
+        "min_prb": 3,
+        "max_prb": 3,
+        "ded_prb": 3,
+        "pathloss": 92.49532824193857
+    }
+]

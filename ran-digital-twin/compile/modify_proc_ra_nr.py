@@ -1,3 +1,22 @@
+#
+# modify_ra_nr.py
+#
+# Ryan Barker
+# Clemson University IS-WiN Laboratory 
+# ORAN team
+# 
+# Description: This script modifies the `proc_ra_nr.cc` file in the srsRAN 4G 
+# source code by commenting out specific lines in a target block related to 
+# the random-access backoff mechanism. It then inserts new code to adjust the 
+# backoff behavior, implementing a random wait approach. This allows for 
+# custom backoff settings to enhance RA (Random Access) performance.
+#
+# Before modifying the file, the script creates a backup to ensure the original 
+# file remains intact if rollback is needed.
+#
+# Usage: python modify_ra_nr.py
+# 
+
 import os
 import shutil
 

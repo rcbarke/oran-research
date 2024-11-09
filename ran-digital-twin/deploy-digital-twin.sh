@@ -47,6 +47,9 @@
 # - Each UE runs in its own network namespace to simulate multiple devices attaching to the network.
 # - The script utilizes `gnome-terminal` to open separate tabs for each process, making it easier to manage the environment.
 
+# Supress GTK error
+export NO_AT_BRIDGE=1
+
 # Function to check for required commands
 check_command() {
     if ! command -v "$1" &> /dev/null; then
@@ -59,6 +62,7 @@ check_command() {
 validate_cli() {
     build_flag=false
     xm_flag=false
+    rm_flag=false
 
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -68,6 +72,10 @@ validate_cli() {
                 ;;
             -xm)
                 xm_flag=true
+                shift
+                ;;
+            -rm)
+                rm_flag=true
                 shift
                 ;;
             *)
@@ -110,7 +118,7 @@ echo "---------------------------------------------------------------------"
 echo ""
 
 # Step 1: Launch Open5GS 5G Core (5GC) in a new tab
-gnome-terminal --tab --title="Open5GS 5GC" -- bash -c "cd srsRAN_Project/docker && echo 'Starting Open5GS 5G Core...' && sudo docker compose up --build 5gc; exec bash"
+gnome-terminal --tab --title="Open5GS 5GC" -- bash -c "cd srsRAN_Project/docker && echo 'Starting Open5GS 5G Core...' && sudo docker compose up --build 5gc; exec bash" 2>/dev/null
 
 # Wait for Open5GS to finish building
 echo "Waiting for Open5GS to build and run..."
@@ -118,7 +126,7 @@ echo "Press Enter when Open5GS is running and ready."
 read -r
 
 # Step 2: Launch OSC RIC in a new tab
-gnome-terminal --tab --title="OSC RIC" -- bash -c "cd oran-sc-ric && echo 'Starting OSC RIC...' && sudo docker compose up; exec bash"
+gnome-terminal --tab --title="OSC RIC" -- bash -c "cd oran-sc-ric && echo 'Starting OSC RIC...' && sudo docker compose up; exec bash" 2>/dev/null
 
 # Wait for OSC RIC to connect
 echo "Waiting for OSC RIC to connect to Open5GS..."
@@ -126,7 +134,7 @@ echo "Press Enter once OSC RIC is connected and running."
 read -r
 
 # Step 3: Launch srsGNB in a new tab
-gnome-terminal --tab --title="srsGNB" -- bash -c "cd srsRAN_Project/build/apps/gnb && echo 'Starting srsGNB...' && sudo ./gnb -c gnb_zmq.yaml; exec bash"
+gnome-terminal --tab --title="srsGNB" -- bash -c "cd srsRAN_Project/build/apps/gnb && echo 'Starting srsGNB...' && sudo ./gnb -c gnb_zmq.yaml; exec bash" 2>/dev/null
 
 # Wait for gNB to connect to OSC RIC and Open5GS 5GC
 echo "Waiting for gNB to connect..."
@@ -162,7 +170,7 @@ for (( i=1; i<=num_ues; i++ )); do
         echo 'UE$i deployed. Press Enter to keep this terminal open.' &&
         read -r
         exec bash
-    "
+    " 2>/dev/null
 done
 
 # Wait for UEs to show "Attaching UE..."
@@ -175,9 +183,9 @@ read -r
 gnome-terminal --tab --title="GNU Radio" -- bash -c "
     cd srsRAN_4G/build/srsue/src &&
     echo 'Launching GNU Radio for modulation...' &&
-    sudo ./multi_ue_scenario.py;
+    python3 multi_ue_scenario.py;
     exec bash
-"
+" 2>/dev/null
 
 # Wait for user to click Play in GNU Radio
 echo "Launch GNU Radio and ensure modulation has started..."
@@ -196,10 +204,13 @@ for (( i=1; i<=num_ues; i++ )); do
     sudo ip netns exec "$namespace" ip route add default via 10.45.1.1 dev tun_srsue   
 done
 
+echo "Deployment complete! UEs should now be connected to the gNB, and the network is ready."
+echo "You can now simulate traffic with iperf or other tools."
+
 # Check if the -xm flag was provided to automatically run monitoring xApps
 if $xm_flag; then
-    echo "Starting xApps... KPIMon = RIC Monitoring, Grafana = RAN Monitoring..."
-    ./monitoring-xApps.sh
+    echo "Starting monitoring xApps... KPIMon = RIC Monitoring, Grafana = RAN Monitoring..."
+    ./cu_xApps/launch-monitoring-xApps.sh $num_ues
 else
     # Prompt the user to run the monitoring xApps (KPIMon and Grafana)
     read -p "Would you like to start monitoring xApps (KPIMon and Grafana)? [Y/n]: " response
@@ -213,14 +224,54 @@ else
     # If the response is 'y', run the monitoring-xApps.sh script
     if [[ "$response" == "y" ]]; then
         echo "Starting xApps... KPIMon = RIC Monitoring, Grafana = RAN Monitoring..."
-        ./monitoring-xApps.sh $num_ues
+        ./cu_xApps/launch-monitoring-xApps.sh $num_ues
     else
         echo "Skipping monitoring xApps."
     fi
 fi
 
-echo "Deployment complete! UEs should now be connected to the gNB, and the network is ready."
-echo "You can now simulate traffic with iperf or other tools."
+# Check if the -rm flag was provided to automatically run resource management xApps
+if $rm_flag; then
+    echo "Starting resource management xApp..."
+    ./cu_xApps/launch-prb-xApp.sh
+else
+    # Prompt the user to run the monitoring xApps (KPIMon and Grafana)
+    read -p "Would you like to start the resource management xApp? [Y/n]: " response
+
+    # Default to 'y' if no response is provided
+    response=${response:-y}
+
+    # Convert response to lowercase for consistent comparison
+    response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
+
+    # If the response is 'y', run the monitoring-xApps.sh script
+    if [[ "$response" == "y" ]]; then
+        echo "Starting xApp..."
+        ./cu_xApps/launch-prb-xApp.sh
+        
+        read -p "Would you like to start the resource management xApp? [Y/n]: " response
+        
+        # Default to 'y' if no response is provided
+        response=${response:-y}
+        
+        # Convert response to lowercase for consistent comparison
+        response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
+        
+        if [[ "$response" == "y" ]]; then
+            echo "Starting dynamic deep reinforcement learning PRB allocation..."
+            gnome-terminal --tab --title="GNU Radio" -- bash -c "
+                cd rl_prb_allocation &&
+                echo 'Launching dynamic DRL PRB allocation...' &&
+                python3 main.py;
+                exec bash
+            " 2>/dev/null
+        else
+            echo "Skipping deep reinforcement learning algorithm."
+        fi
+    else
+        echo "Skipping resource management xApps."
+    fi
+fi
 
 echo ""
 echo ""

@@ -16,7 +16,9 @@ cu_cp:
         plmn_list:
           - plmn: "00101"
             tai_slice_support_list:
-              - sst: 1
+              - 
+                sst: 1
+                sd: 1
   rrc:
     force_reestablishment_fallback: true    # Optional BOOLEAN (false). Force RRC re-establishment fallback to RRC setup. Supported: [false, true].
     rrc_procedure_timeout_ms: 3000          # Optional UINT (720). Sets the timeout in ms used for RRC message exchange with UE. It needs to suit the expected communication delay and account for potential retransmissions UE processing delays, SR delays, etc. Supported: [0 - inf].
@@ -53,9 +55,16 @@ cell_cfg:
 #    max_rb_size: 10                  # Optional UINT. Sets the maximum RB size for the UE PUSCH resource allocation.
 #    start_rb: 1                      # Optional UINT. Sets the start RB for resource allocation of UE PUSCHs.
 #    end_rb: 10                       # Optional UINT. Sets the end RB for resource allocation of UE PUSCHs.
+  slicing:
+    - 
+      sst: 1
+      sd: 1
+      sched_cfg:
+        min_prb_policy_ratio: 0
+        max_prb_policy_ratio: 100
 
 cu_cp:
-  inactivity_timer: 300            # Sets the UE/PDU Session/DRB inactivity timer to 7200 seconds. Supported: [1 - 7200].
+  inactivity_timer: 7200              # Sets the UE/PDU Session/DRB inactivity timer to 7200 seconds. Supported: [1 - 7200].
 
 log:
   filename: /tmp/gnb.log            # Path of the log file.
@@ -80,7 +89,7 @@ e2:
 
 metrics: 
   rlc_json_enable: 1                # Enable RLC metrics reporting (need to deliver measurements to E2SM_KPM service model)
-  rlc_report_period: 1000           # Set reporting period to 1s
+  rlc_report_period: 250            # Set reporting period to 1s
   enable_json_metrics: true         # Enable reporting metrics in JSON format
   addr: 172.19.1.4                  # Metrics-server IP
   port: 55555                       # Metrics-server Port

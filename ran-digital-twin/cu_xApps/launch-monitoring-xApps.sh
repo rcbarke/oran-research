@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# monitoring-xApps.sh
+# launch-monitoring-xApps.sh
 #
 # Ryan Barker
 # Clemson University IS-WiN Laboratory
@@ -15,6 +15,9 @@
 #
 # Example:
 # ./monitoring-xApps.sh 10
+
+# Supress GTK error
+export NO_AT_BRIDGE=1
 
 # Check if NUM_UEs is provided
 if [ "$#" -ne 1 ]; then
@@ -41,20 +44,20 @@ if ! command -v firefox &> /dev/null; then
 fi
 
 # Open KPIMon in a new gnome-terminal window
-gnome-terminal --title="KPIMon" -- bash -c "
+gnome-terminal --title="KPIMon xApp" -- bash -c "
     cd ./oran-sc-ric &&
     echo 'Starting KPIMon for $NUM_UEs UEs...' &&
     sudo docker compose exec python_xapp_runner ./cu_kpm_mon_xapp.py --metrics=DRB.UEThpDl,DRB.UEThpUl --kpm_report_style=5 --ue_ids=$UE_STR --refresh_rate=125;
     exec bash
-"
+" 2>/dev/null
 
 # Open Grafana in a new gnome-terminal window
-gnome-terminal --tab --title="Grafana" -- bash -c "
+gnome-terminal --tab --title="Grafana Metrics Server" -- bash -c "
     cd srsRAN_Project &&
     echo 'Starting Grafana monitoring dashboard...' &&
     sudo docker compose -f docker/docker-compose.yml up grafana;
     exec bash
-"
+" 2>/dev/null
 
 # Sleep for 10 seconds to give Grafana time to start
 echo "Waiting 10 seconds for Grafana to start..."
@@ -62,6 +65,6 @@ sleep 10
 
 # Launch Firefox to open Grafana dashboard
 echo "Opening Grafana in Firefox at http://localhost:3300"
-firefox http://localhost:10300 &
+firefox http://localhost:10300 2>/dev/null &
 
 echo "Monitoring xApps have been launched in separate terminals."
